@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProvaHidrica", "ProvaHidrica\ProvaHidrica.csproj", "{DAD1D9CB-9E5D-4E1B-BBC6-FE8B43C008C1}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Prova Hidrica - Conecsa", "Prova Hidrica - Conecsa\Prova Hidrica - Conecsa.vdproj", "{2D40E09C-330A-48D0-B936-BA7D134869CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DAD1D9CB-9E5D-4E1B-BBC6-FE8B43C008C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAD1D9CB-9E5D-4E1B-BBC6-FE8B43C008C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAD1D9CB-9E5D-4E1B-BBC6-FE8B43C008C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAD1D9CB-9E5D-4E1B-BBC6-FE8B43C008C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D40E09C-330A-48D0-B936-BA7D134869CC}.Debug|Any CPU.ActiveCfg = Debug
+		{2D40E09C-330A-48D0-B936-BA7D134869CC}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

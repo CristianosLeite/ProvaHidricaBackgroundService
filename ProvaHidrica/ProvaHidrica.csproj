@@ -1,0 +1,83 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <StartupObject>ProvaHidrica.App</StartupObject>
+    <Company>Conecsa Automação e Ti</Company>
+    <PackageIcon></PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Windows\SplashScreen.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <None Update="favicon.ico">
+	   <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FontAwesome" Version="4.7.0" />
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
+    <PackageReference Include="MaterialDesignColors" Version="5.2.1" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="5.2.1" />
+    <PackageReference Include="Npgsql" Version="9.0.2" />
+    <PackageReference Include="PCSC" Version="7.0.0" />
+    <PackageReference Include="runtime.native.System.IO.Ports" Version="9.0.1" />
+    <PackageReference Include="Sharp7" Version="1.1.84" />
+    <PackageReference Include="Sharp7.Rx" Version="2.0.17" />
+    <PackageReference Include="SocketIOClient" Version="3.1.2" />
+    <PackageReference Include="System.IO.Ports" Version="9.0.1" />
+    <PackageReference Include="Telerik.FontIcons" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Windows\SplashScreen.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Settings\SPlc.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SPlc.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Settings\SPlcAddresses.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SPlcAddresses.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="RegisterProtocol.ps1">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>RegisterProtocol.cs</LastGenOutput>
+    </None>
+    <None Update="Settings\SPlc.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>SPlc.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="Settings\SPlcAddresses.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>SPlcAddresses.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+</Project>
