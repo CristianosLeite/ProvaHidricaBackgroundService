@@ -22,7 +22,7 @@ namespace ProvaHidrica.Database
 
                 using var connection = _connectionFactory.GetConnection();
                 {
-                    connection.Open();
+                    connection!.Open();
                     using var command = new NpgsqlCommand(
                         "SELECT id, user_name, badge_number, permissions FROM users",
                         connection
@@ -57,7 +57,7 @@ namespace ProvaHidrica.Database
             try
             {
                 using var connection = _connectionFactory.GetConnection();
-                connection.Open();
+                connection!.Open();
 
                 var selectUser = new NpgsqlCommand(
                     "SELECT id, user_name, badge_number, permissions FROM users WHERE id = @id;",
@@ -100,13 +100,13 @@ namespace ProvaHidrica.Database
             try
             {
                 using var connection = _connectionFactory.GetConnection();
-                await connection.OpenAsync();
+                await connection!.OpenAsync();
 
                 var insertUser = new NpgsqlCommand(
                     "INSERT INTO users (id, user_name, badge_number, permissions) "
                         + "VALUES (@id, @user_name, @badge_number, @permissions) "
-                        + "ON CONFLICT (id) DO UPDATE "
-                        + "SET badge_number = user_name = @user_name, @badge_number, permissions = @permissions;",
+                        + "ON CONFLICT (badge_number) DO UPDATE "
+                        + "SET badge_number = @badge_number, user_name = @user_name, permissions = @permissions;",
                     connection
                 );
                 insertUser.Parameters.AddWithValue("@id", user.Id);
@@ -133,7 +133,7 @@ namespace ProvaHidrica.Database
             try
             {
                 using var connection = _connectionFactory.GetConnection();
-                await connection.OpenAsync();
+                await connection!.OpenAsync();
 
                 var selectUser = new NpgsqlCommand(
                     "SELECT id, user_name, permissions FROM users WHERE badge_number = @badge_number;",
@@ -149,7 +149,7 @@ namespace ProvaHidrica.Database
 
                     string id = reader.GetString(0);
                     string username = reader.GetString(1);
-                    string[] permissionsArray = reader.GetFieldValue<string[]>(3);
+                    string[] permissionsArray = reader.GetFieldValue<string[]>(2);
 
                     List<string> permissions = [.. permissionsArray];
 
@@ -175,7 +175,7 @@ namespace ProvaHidrica.Database
             try
             {
                 using var connection = _connectionFactory.GetConnection();
-                connection.Open();
+                connection!.Open();
 
                 var deleteUser = new NpgsqlCommand("DELETE FROM users WHERE id = @id;", connection);
                 deleteUser.Parameters.AddWithValue("@id", user.Id);

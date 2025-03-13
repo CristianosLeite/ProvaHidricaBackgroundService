@@ -48,6 +48,7 @@ namespace ProvaHidrica.Components
                 Auth.SetLoggedInUser(user);
                 Auth.SetLoggedAt(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
                 Window.GetWindow(this)!.Close();
+                await Api.SendMessageAsync("authenticated", user);
             }
             else
             {

@@ -3,6 +3,7 @@ using ProvaHidrica.Database;
 using ProvaHidrica.Devices.Nfc;
 using ProvaHidrica.Models;
 using ProvaHidrica.Services;
+using ProvaHidrica.Devices.Plc;
 using ProvaHidrica.Types;
 using ProvaHidrica.Utils;
 using System.Diagnostics;
@@ -23,6 +24,9 @@ namespace ProvaHidrica.Windows
         public event EventHandler<bool>? WorkDone;
         public bool IsWorkDone { get; private set; }
 
+        private Plc _plc;
+        private PlcService _plcService;
+
         public NfcWindow(Context context, User? user = null)
         {
             InitializeComponent();
@@ -37,6 +41,9 @@ namespace ProvaHidrica.Windows
             InitializeNfc();
 
             SetProperties();
+
+            _plc = new();
+            _plcService = new(_plc);
         }
 
         private void SetProperties()
@@ -46,7 +53,7 @@ namespace ProvaHidrica.Windows
 
         private void InitializeNfc()
         {
-            Task.Run(InitializeNfcReader);
+            Dispatcher.Invoke(() => Task.Run(InitializeNfcReader));
         }
 
         private void InitializeNfcReader()
@@ -76,7 +83,7 @@ namespace ProvaHidrica.Windows
         private void HandleNfcInitializationError()
         {
             if (context == Context.Login)
-                Application.Current.Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
                     Login login = new();
                     Main.Children.Clear();
@@ -84,7 +91,7 @@ namespace ProvaHidrica.Windows
                     IsWorkDone = true;
                 });
             else if (context == Context.Create)
-                Application.Current.Dispatcher.Invoke(async () =>
+                Dispatcher.Invoke(async () =>
                 {
                     if (User != null)
                     {
@@ -92,6 +99,12 @@ namespace ProvaHidrica.Windows
                         if (await SaveToDatabase(User, Context.Create))
                             Close();
                     }
+                });
+            else if (context == Context.Open)
+                Dispatcher.Invoke(async () =>
+                {
+                    await _plcService.WriteToPlc(1, "", string.Empty, Event.Reading);
+                    Close();
                 });
             else
                 HandleContextError();
@@ -115,7 +128,7 @@ namespace ProvaHidrica.Windows
             var uid = ACR122U.GetUID(reader);
             if (uid != null)
             {
-                string id = BitConverter.ToString(uid).Replace("-", "");
+                string id = Convert.ToHexString(uid);
                 User? user = await db.GetUserById(id);
 
                 if (user != null)
@@ -151,6 +164,15 @@ namespace ProvaHidrica.Windows
                     NfcStd nfcStd = new(Context.Create);
                     Main.Children.Clear();
                     Main.Children.Add(nfcStd);
+                });
+            }
+            else if (context == Context.Open)
+            {
+                Dispatcher.InvokeAsync(async () =>
+                {
+                    // Testar amanhã
+                    await _plcService.WriteToPlc(1, "", string.Empty, Event.Reading);
+                    Close();
                 });
             }
             else

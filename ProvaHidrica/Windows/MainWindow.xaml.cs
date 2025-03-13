@@ -7,6 +7,8 @@ using ProvaHidrica.Windows;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
+using ProvaHidrica.Components;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 
@@ -53,18 +55,30 @@ namespace ProvaHidrica
                     await Api.SendMessageAsync("erro", new());
                 });
             }
+
+            LoadNfcWindow(Context.Open);
         }
 
-        private static void LoadNfcWindow()
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Header.Children.Add(new Header());
+            Main.Children.Add(new MainApplication());
+            Toolbar.Children.Add(new Toolbar());
+            Footer.Children.Add(new Footer());
+        }
+
+        private static void LoadNfcWindow(Context context)
         {
             NfcWindow? nfcWindow = null;
 
             Thread staThread =
                 new(() =>
                 {
-                    nfcWindow = new NfcWindow(Context.Login);
+                    nfcWindow = new NfcWindow(context);
+                    nfcWindow.Main.Children.Add(new NfcStd(context));
                     nfcWindow.Closed += (s, e) => Dispatcher.CurrentDispatcher.InvokeShutdown();
-                    nfcWindow.ShowDialog();
+                    if (context == Context.Login)
+                        nfcWindow.ShowDialog();
                 });
 
             staThread.SetApartmentState(ApartmentState.STA);
@@ -81,7 +95,7 @@ namespace ProvaHidrica
                 }
                 else
                 {
-                    LoadNfcWindow();
+                    LoadNfcWindow(Context.Login);
                 }
             };
             var contextMenu = new ContextMenuStrip();
@@ -90,10 +104,9 @@ namespace ProvaHidrica
                 null,
                 (s, e) =>
                 {
-                    LoadNfcWindow();
+                    LoadNfcWindow(Context.Login);
                 }
             );
-            contextMenu.Items.Add("Abrir", null, (s, e) => ShowMainWindow());
             contextMenu.Items.Add("Sair", null, (s, e) => ExitApplication());
             _notifyIcon.ContextMenuStrip = contextMenu;
         }
@@ -132,20 +145,24 @@ namespace ProvaHidrica
         {
             Dispatcher.Invoke(async () =>
             {
-                //VPInput.Text = data;
-                //_isVanReading = true;
                 try
                 {
-                    Recipe? recipe = await _db.GetRecipeByVp(data);
-
-                    if (recipe == null)
+                    if (data.Length == 14)
                     {
-                        object? error = new { message = "Receita não encontrada" };
-                        await Api.SendMessageAsync("error", error);
-                        return;
-                    }
+                        Recipe? recipe = await _db.GetRecipeByVp(data);
 
-                    await Api.SendMessageAsync("barcodeData", recipe);
+                        if (recipe == null)
+                        {
+                            object? error = new { message = "Receita não encontrada" };
+                            await Api.SendMessageAsync("error", error);
+                            return;
+                        }
+
+                        await Api.SendMessageAsync("barcodeData", recipe);
+                    }
+                    else {
+                        await Api.SendMessageAsync("barcodeData", data);
+                    }
                 }
                 catch (Exception e)
                 {

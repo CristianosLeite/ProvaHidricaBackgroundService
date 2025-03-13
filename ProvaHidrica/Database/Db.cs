@@ -190,7 +190,7 @@ namespace ProvaHidrica.Database
                         + "CreatedAt timestamp without time zone NOT NULL, "
                         + "Event character varying COLLATE pg_catalog.\"default\" NOT NULL, "
                         + "Target character varying COLLATE pg_catalog.\"default\", "
-                        + "Van character varying COLLATE pg_catalog.\"default\", "
+                        + "Cis character varying COLLATE pg_catalog.\"default\", "
                         + "Door character varying COLLATE pg_catalog.\"default\" NOT NULL, "
                         + "Mode character varying COLLATE pg_catalog.\"default\" NOT NULL, "
                         + "UserId character varying COLLATE pg_catalog.\"default\" NOT NULL, "

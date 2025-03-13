@@ -16,12 +16,12 @@ namespace ProvaHidrica.Database
             try
             {
                 using var connection = _connectionFactory.GetConnection();
-                connection.Open();
+                connection?.Open();
 
                 var recipeList = new ObservableCollection<Recipe>();
 
                 using var command = new NpgsqlCommand(
-                    "SELECT recipe_id, description, sprinkler_height FROM public.recipes;",
+                    "SELECT recipe_id, vp, description, sprinkler_height FROM public.recipes;",
                     connection
                 );
                 using var reader = command.ExecuteReader();
@@ -30,8 +30,8 @@ namespace ProvaHidrica.Database
                 {
                     Recipe recipe = new(
                         reader.GetInt32(0), // RecipeId
-                        reader.GetString(1), // Description
-                        reader.GetString(2), // VP
+                        reader.GetString(1), // Vp
+                        reader.GetString(2), // Description
                         reader.GetInt32(3) // SprinklerHeight
                     );
 

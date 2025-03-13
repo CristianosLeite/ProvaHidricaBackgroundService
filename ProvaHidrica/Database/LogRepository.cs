@@ -58,7 +58,7 @@ namespace ProvaHidrica.Database
             {
                 "SELECT CreatedAt, Event, Target, Device FROM SysLogs ORDER BY CreatedAt DESC LIMIT 200",
                 "SELECT CreatedAt, Event, Target, UserId FROM UserLogs ORDER BY CreatedAt DESC LIMIT 200",
-                "SELECT CreatedAt, Event, Target, Van, Door, Mode, UserId FROM Operations ORDER BY CreatedAt DESC LIMIT 200",
+                "SELECT CreatedAt, Event, Target, Cis, Door, Mode, UserId FROM Operations ORDER BY CreatedAt DESC LIMIT 200",
             };
 
             foreach (var query in queries)

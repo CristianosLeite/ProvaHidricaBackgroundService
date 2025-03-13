@@ -29,7 +29,7 @@ namespace ProvaHidrica.Windows
                         ShowErrorMessage(
                             "Erro ao conectar com o banco de dados. A aplicação será encerrda."
                         );
-                        App.Current.Shutdown();
+                        Dispatcher.Invoke(() => App.Current.Shutdown());
                     }
 
                     try
@@ -40,7 +40,7 @@ namespace ProvaHidrica.Windows
                     {
                         // If the initialization fails, application shoul be closed
                         ShowErrorMessage("Erro ao conectar a API. A aplicação será encerrda.");
-                        App.Current.Shutdown();
+                        Dispatcher.Invoke(() => App.Current.Shutdown());
                     }
                 })
                 .ContinueWith(
