@@ -1,7 +1,7 @@
-﻿using ProvaHidrica.Database;
+﻿using System.Windows;
+using ProvaHidrica.Database;
 using ProvaHidrica.Interfaces;
 using ProvaHidrica.Windows;
-using System.Windows;
 
 namespace ProvaHidrica.Services
 {

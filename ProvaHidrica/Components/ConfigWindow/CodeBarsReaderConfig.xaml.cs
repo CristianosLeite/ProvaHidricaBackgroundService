@@ -1,8 +1,8 @@
-﻿using ProvaHidrica.Settings;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Windows;
 using System.Windows.Controls;
+using ProvaHidrica.Settings;
 
 namespace ProvaHidrica.Components
 {

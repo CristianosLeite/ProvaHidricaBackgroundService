@@ -1,5 +1,5 @@
-﻿using ProvaHidrica.Types;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+using ProvaHidrica.Types;
 
 namespace ProvaHidrica.Components
 {
@@ -9,6 +9,7 @@ namespace ProvaHidrica.Components
     public partial class NfcStd : UserControl
     {
         public Context Context;
+
         public NfcStd(Context context)
         {
             InitializeComponent();

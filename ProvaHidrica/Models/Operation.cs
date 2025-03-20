@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProvaHidrica.Models
+﻿namespace ProvaHidrica.Models
 {
     public class Operation(
-        long operationId,
+        string operationId,
         string vp,
         string cis,
+        string chassis,
         string _operator,
-        string recipe,
-        string startTime,
-        string endTime,
-        string duration,
+        int recipe,
+        DateTime startTime,
+        DateTime endTime,
+        TimeSpan duration,
+        string status,
         bool infPoint1,
         bool infPoint2,
         bool infPoint3,
@@ -51,14 +47,16 @@ namespace ProvaHidrica.Models
         DateTime createdAt
     )
     {
-        public long OperationId { get; set; } = operationId;
+        public string OperationId { get; set; } = operationId;
         public string Vp { get; set; } = vp;
-        public string Cis { get; set; } = cis;
+        public string? Cis { get; set; } = cis;
+        public string? Chassis { get; set; } = chassis;
         public string Operator { get; set; } = _operator;
-        public string Recipe { get; set; } = recipe;
-        public string StartTime { get; set; } = startTime;
-        public string Duration { get; set; } = duration;
-        public string EndTime { get; set; } = endTime;
+        public int Recipe { get; set; } = recipe;
+        public DateTime StartTime { get; set; } = startTime;
+        public TimeSpan Duration { get; set; } = duration;
+        public string Status { get; set; } = status;
+        public DateTime EndTime { get; set; } = endTime;
         public bool InfPoint1 { get; set; } = infPoint1;
         public bool InfPoint2 { get; set; } = infPoint2;
         public bool InfPoint3 { get; set; } = infPoint3;

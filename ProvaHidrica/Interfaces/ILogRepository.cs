@@ -11,8 +11,6 @@ namespace ProvaHidrica.Interfaces
         Task<List<SysLog>> GetSysLogsByDate(string initialDate, string finalDate);
         Task LogUserLogin(User user);
         Task LogUserLogout(User user);
-        Task LogUserEditPartnumber(User user, string partnumber, Context context);
-        Task LogUserDeletePartnumber(User user, string partnumber);
         Task LogUserEditUser(User user, string target, Context context);
         Task LogUserDeleteUser(User user, string target);
         Task LogSysSwitchedMode(string mode);

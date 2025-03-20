@@ -1,5 +1,8 @@
 ﻿using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using ProvaHidrica.Database;
+using ProvaHidrica.Devices.Plc;
+using ProvaHidrica.Interfaces;
 using ProvaHidrica.Services;
 
 namespace ProvaHidrica.Windows
@@ -9,6 +12,8 @@ namespace ProvaHidrica.Windows
     /// </summary>
     public partial class SplashScreen : Window
     {
+        public static IServiceProvider? ServiceProvider { get; private set; }
+
         public SplashScreen()
         {
             InitializeComponent();
@@ -48,13 +53,30 @@ namespace ProvaHidrica.Windows
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            var mainWindow = new MainWindow();
+                            var serviceCollection = new ServiceCollection();
+                            ConfigureServices(serviceCollection);
+                            ServiceProvider = serviceCollection.BuildServiceProvider();
+
+                            var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
                             Application.Current.MainWindow = mainWindow;
                             Close();
                         });
                     },
                     TaskScheduler.FromCurrentSynchronizationContext()
                 );
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+            services.AddSingleton<Db>();
+            services.AddSingleton<MainWindow>();
+            services.AddSingleton<DbConnectionFactory>();
+            services.AddSingleton<Db>();
+            services.AddSingleton<Plc>();
+            services.AddSingleton<PlcService>();
+            services.AddSingleton<NfcService>();
+            services.AddTransient<MainWindow>();
         }
 
         private static void ShowErrorMessage(string message)

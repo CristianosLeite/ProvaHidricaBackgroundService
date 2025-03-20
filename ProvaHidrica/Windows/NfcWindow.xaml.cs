@@ -1,14 +1,11 @@
-﻿using ProvaHidrica.Components;
+﻿using System.Windows;
+using System.Windows.Media.Effects;
+using ProvaHidrica.Components;
 using ProvaHidrica.Database;
-using ProvaHidrica.Devices.Nfc;
 using ProvaHidrica.Models;
 using ProvaHidrica.Services;
-using ProvaHidrica.Devices.Plc;
 using ProvaHidrica.Types;
 using ProvaHidrica.Utils;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Media.Effects;
 
 namespace ProvaHidrica.Windows
 {
@@ -20,12 +17,10 @@ namespace ProvaHidrica.Windows
         private bool _disposed = false;
         private readonly Db db;
         private readonly Context context;
+        private readonly NfcService _nfcSerivce;
         private User? User = null;
         public event EventHandler<bool>? WorkDone;
         public bool IsWorkDone { get; private set; }
-
-        private Plc _plc;
-        private PlcService _plcService;
 
         public NfcWindow(Context context, User? user = null)
         {
@@ -34,6 +29,9 @@ namespace ProvaHidrica.Windows
             DbConnectionFactory connectionFactory = new();
             db = new(connectionFactory);
 
+            _nfcSerivce = new NfcService();
+            _nfcSerivce.CardInserted += OnCardInserted;
+
             this.context = context;
             User = user;
 
@@ -41,9 +39,6 @@ namespace ProvaHidrica.Windows
             InitializeNfc();
 
             SetProperties();
-
-            _plc = new();
-            _plcService = new(_plc);
         }
 
         private void SetProperties()
@@ -58,21 +53,9 @@ namespace ProvaHidrica.Windows
 
         private void InitializeNfcReader()
         {
-            ACR122U acr122u = new();
-
             try
             {
-                acr122u.Init(true);
-                acr122u.CardInserted += Acr122u_CardInserted;
-                acr122u.CardRemoved += Acr122u_CardRemoved;
-
-                // wait for a signal
-                ManualResetEvent waitHandle = new(false);
-                waitHandle.WaitOne();
-
-                acr122u.CardInserted -= Acr122u_CardInserted;
-                acr122u.CardRemoved -= Acr122u_CardRemoved;
-                Thread.Sleep(1000);
+                _nfcSerivce.InitializeNfcReader();
             }
             catch
             {
@@ -83,6 +66,7 @@ namespace ProvaHidrica.Windows
         private void HandleNfcInitializationError()
         {
             if (context == Context.Login)
+            {
                 Dispatcher.Invoke(() =>
                 {
                     Login login = new();
@@ -90,7 +74,10 @@ namespace ProvaHidrica.Windows
                     Main.Children.Add(login);
                     IsWorkDone = true;
                 });
+                return;
+            }
             else if (context == Context.Create)
+            {
                 Dispatcher.Invoke(async () =>
                 {
                     if (User != null)
@@ -100,14 +87,9 @@ namespace ProvaHidrica.Windows
                             Close();
                     }
                 });
-            else if (context == Context.Open)
-                Dispatcher.Invoke(async () =>
-                {
-                    await _plcService.WriteToPlc(1, "", string.Empty, Event.Reading);
-                    Close();
-                });
-            else
-                HandleContextError();
+                return;
+            }
+            HandleContextError();
         }
 
         private void ReloadWindow(object sernder, RoutedEventArgs e)
@@ -123,22 +105,17 @@ namespace ProvaHidrica.Windows
             App.Current.MainWindow.Effect = null;
         }
 
-        private async void Acr122u_CardInserted(PCSC.ICardReader reader)
+        private async void OnCardInserted(object? sender, string uid)
         {
-            var uid = ACR122U.GetUID(reader);
-            if (uid != null)
-            {
-                string id = Convert.ToHexString(uid);
-                User? user = await db.GetUserById(id);
+            User? user = await db.GetUserById(uid);
 
-                if (user != null)
-                {
-                    HandleExistingUser(user);
-                }
-                else
-                {
-                    HandleNewUser(id);
-                }
+            if (user != null)
+            {
+                HandleExistingUser(user);
+            }
+            else
+            {
+                HandleNewUser(uid);
             }
         }
 
@@ -155,6 +132,7 @@ namespace ProvaHidrica.Windows
                     await ShowLoadingAndSuccess();
                     Close();
                 });
+                return;
             }
             else if (context == Context.Create)
             {
@@ -165,15 +143,7 @@ namespace ProvaHidrica.Windows
                     Main.Children.Clear();
                     Main.Children.Add(nfcStd);
                 });
-            }
-            else if (context == Context.Open)
-            {
-                Dispatcher.InvokeAsync(async () =>
-                {
-                    // Testar amanhã
-                    await _plcService.WriteToPlc(1, "", string.Empty, Event.Reading);
-                    Close();
-                });
+                return;
             }
             else
             {
@@ -231,9 +201,9 @@ namespace ProvaHidrica.Windows
             }
         }
 
-        private static void HandleContextError()
+        private void HandleContextError()
         {
-            ErrorMessage.Show("Contexto inválido.");
+            ErrorMessage.Show("Contexto inválido. " + context);
         }
 
         private static string GenerateRandomId()
@@ -279,11 +249,6 @@ namespace ProvaHidrica.Windows
             Main.Children.Clear();
         }
 
-        private void Acr122u_CardRemoved()
-        {
-            Debug.WriteLine("NFC tag removed.");
-        }
-
         private void OnWindowClosed(object sender, EventArgs e)
         {
             Dispose();
@@ -293,6 +258,7 @@ namespace ProvaHidrica.Windows
         {
             if (!_disposed)
             {
+                _nfcSerivce.CardInserted -= OnCardInserted;
                 Close();
                 _disposed = true;
             }

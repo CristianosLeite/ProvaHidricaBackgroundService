@@ -8,6 +8,7 @@ namespace ProvaHidrica.Components
     public partial class NfcError : UserControl
     {
         public readonly string Message;
+
         public NfcError(string message)
         {
             InitializeComponent();

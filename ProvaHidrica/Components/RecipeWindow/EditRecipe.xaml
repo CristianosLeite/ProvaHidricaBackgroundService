@@ -12,78 +12,35 @@
              TextElement.FontSize="14"
              FontFamily="{materialDesign:MaterialDesignFont}"
              Height="450" Width="800">
-    <Grid>
-        <Grid.Resources>
-            <Style TargetType="materialDesign:PackIcon">
-                <Setter Property="Width" Value="30"></Setter>
-                <Setter Property="Height" Value="30"></Setter>
-            </Style>
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <Grid>
-            <Grid.Resources>
-                <Style TargetType="materialDesign:PackIcon">
-                    <Setter Property="Width" Value="20"></Setter>
-                    <Setter Property="Height" Value="20"></Setter>
-                </Style>
-            </Grid.Resources>
-            <Label x:Name="Title" HorizontalAlignment="Left" Content="Cadastrar Receita" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="20" Width="389" Foreground="#FFD7D7D7"/>
+    <materialDesign:Card Margin="10" UniformCornerRadius="15" Background="#FF323232">
+        <Grid Background="#FF323232" Margin="10,0,0,0" VerticalAlignment="Center" Height="340">
+            <Label x:Name="Title" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="20" Width="389" Foreground="#FFD7D7D7"/>
             <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}" 
-                        Margin="10 0 10 0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="40" Click="CloseButton_Click" Background="DarkGray" BorderBrush="DarkGray">
+                    Margin="10 0 10 0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="40" Background="DarkGray" BorderBrush="DarkGray" Click="CloseButton_Click">
                 <StackPanel>
                     <materialDesign:PackIcon Kind="Close"/>
                 </StackPanel>
             </Button>
+            <TextBox x:Name="TbVP" VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Width="184"
+                materialDesign:HintAssist.Hint="VP" Margin="19,144,0,0" MaxLength="14" IsUndoEnabled="False" UndoLimit="98"/>
+            <TextBox x:Name="Description" VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Width="278"
+                materialDesign:HintAssist.Hint="Descrição" Margin="229,144,0,0" MaxLength="50" IsUndoEnabled="False" UndoLimit="98"/>
+            <ComboBox x:Name="SprinklerHeight"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                materialDesign:HintAssist.Hint="Altura dos aspersores"
+                Margin="528,144,30,0"
+                VerticalAlignment="Top"
+                SelectionChanged="SelectionChanged"
+                >
+                <ComboBoxItem Content="1 (alto)"/>
+                <ComboBoxItem Content="2 (médio)"/>
+                <ComboBoxItem Content="3 (baixo)"/>
+            </ComboBox>
+            <Button x:Name="BtnSave" Content="Salvar" HorizontalAlignment="Center" Margin="0,262,0,0" VerticalAlignment="Top" Width="246" Click="BtnSave_Click"/>
         </Grid>
-
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <materialDesign:Card Grid.Column="0" Margin="10">
-                <StackPanel>
-                    <TextBlock Text="Lista de partnumbers" HorizontalAlignment="Center" Margin="5"/>
-                    <ListBox x:Name="lbPartnumbers" SelectionMode="Extended" Margin="5" SelectionChanged="SelectedItemChanged" Height="351"/>
-                </StackPanel>
-            </materialDesign:Card>
-
-            <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Margin="5" Click="AssociateBtnClick">
-                    <StackPanel>
-                        <materialDesign:PackIcon Kind="ChevronDoubleRight" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Margin="5" Click="RemoveAssociation">
-                    <StackPanel>
-                        <materialDesign:PackIcon Kind="ChevronDoubleLeft" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-            </StackPanel>
-
-            <materialDesign:Card Grid.Column="2" Margin="10">
-                <StackPanel>
-                    <TextBox x:Name="TbVP" VerticalAlignment="Top"
-                        HorizontalAlignment="Left"
-                        Width="184"
-                        Margin="5 5 0 10"
-                        materialDesign:HintAssist.Hint="VP" MaxLength="14" IsUndoEnabled="False" UndoLimit="98"/>
-                    <TextBox x:Name="Description"
-                        Width="278"
-                        Margin="5 5 0 10"
-                        HorizontalAlignment="Left"
-                        materialDesign:HintAssist.Hint="Descrição" MaxLength="50" IsUndoEnabled="False" UndoLimit="98"/>
-                    <ListBox x:Name="lbAssociatedPartnumbers" Grid.Column="2" SelectionMode="Extended" Margin="5" SelectionChanged="SelectedItemChanged" Height="251"/>
-                    <Button x:Name="BtnSave" Content="Salvar" HorizontalAlignment="Center" Margin="5" VerticalAlignment="Top" Width="246" Click="BtnSave_Click"/>
-                </StackPanel>
-            </materialDesign:Card>
-
-        </Grid>
-    </Grid>
+    </materialDesign:Card>
 </UserControl>

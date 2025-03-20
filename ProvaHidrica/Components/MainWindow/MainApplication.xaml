@@ -11,7 +11,7 @@
              FontFamily="{materialDesign:MaterialDesignFont}"
              mc:Ignorable="d"
              Unloaded="UnsubscribeAll"
-             d:DesignHeight="600" d:DesignWidth="1280">
+             d:DesignHeight="620" d:DesignWidth="1024">
     <UserControl.Resources>
         <Style x:Key="RoundedButtonStyle" TargetType="Button">
             <Setter Property="Template">
@@ -77,10 +77,10 @@
                 <materialDesign:PackIcon x:Name="LogIcon" Kind="History"/>
             </StackPanel>
         </Button>
-        <materialDesign:Card Grid.Row="1" Margin="40,10,40,10" UniformCornerRadius="15" Background="DarkGray">
+        <materialDesign:Card Grid.Row="1" Margin="40,0,40,0" UniformCornerRadius="15" Background="DarkGray">
             <Grid>
                 <materialDesign:Card Margin="2" Padding="5" UniformCornerRadius="15" Background="#323131"/>
-                <Grid VerticalAlignment="Center" Height="158">
+                <Grid VerticalAlignment="Center" Height="160">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="20"/>
                         <RowDefinition Height="60"/>
@@ -88,8 +88,7 @@
                         <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5*"/>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
                     <TextBlock FontSize="14" Text="OPERAÇÃO" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10, 0" FontWeight="Bold"/>
@@ -97,11 +96,15 @@
                     <StackPanel Grid.Row="1" Orientation="Horizontal">
                         <StackPanel Orientation="Horizontal" Margin="10, 0">
                             <TextBlock x:Name="VPLabel" FontSize="24" Text="VP: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                            <TextBox x:Name="VPInput" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Left"  Margin="10, 0" Width="200" IsEnabled="False" MaxLength="14"/>
+                            <TextBox x:Name="VPInput" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Left"  Margin="10, 0" Width="200" IsEnabled="False" MaxLength="14" SelectionChanged="VPChanged"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="100, 0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="ChassisLabel" FontSize="24" Text="Chassi: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBox x:Name="ChassisInput" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10, 0" Width="250" IsEnabled="False" MaxLength="17" SelectionChanged="ChassisChanged"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
                             <TextBlock x:Name="CISLabel" FontSize="24" Text="CIS: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                            <TextBox x:Name="CISInput" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10, 0" Width="120" IsEnabled="False" MaxLength="7"/>
+                            <TextBox x:Name="CISInput" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10, 0" Width="140" IsEnabled="False" MaxLength="8" SelectionChanged="CISChanged"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -114,11 +117,6 @@
                         <TextBlock x:Name="StatusLabel" Grid.Column="0" FontSize="24" Text="Status: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         <TextBlock x:Name="StatusInput" FontSize="24" Text="Aguardando leitura..." VerticalAlignment="Center" HorizontalAlignment="Left"/>
                     </StackPanel>
-
-                    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Margin="10,0">
-                        <TextBlock x:Name="DoorLabel" Grid.Column="0" FontSize="24" Text="Porta selecionada: " VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                        <TextBlock x:Name="DoorInput" FontSize="24" Text="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    </StackPanel>
                 </Grid>
             </Grid>
         </materialDesign:Card>
@@ -127,13 +125,12 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button x:Name="door1"  Style="{StaticResource RoundedButtonStyle}" Margin="10" Background="LightGray" Foreground="Black" ToolTip="Porta 1" Height="200" Width="200" Click="ManualDoorOpen">
+            <Grid Grid.Row="2" x:Name="Toolbar"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="door1"  Style="{StaticResource RoundedButtonStyle}" Margin="10" Background="LightGray" Foreground="Black" ToolTip="Porta 1" Height="150" Width="150" Click="ManualDoorOpen">
                     1
                 </Button>
-            </StackPanel>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button x:Name="door2" Style="{StaticResource RoundedButtonStyle}" Margin="10" Background="LightGray" Foreground="Black" ToolTip="Porta 2" Height="200" Width="200" Click="ManualDoorOpen">
+                <Button x:Name="door2" Style="{StaticResource RoundedButtonStyle}" Margin="10" Background="LightGray" Foreground="Black" ToolTip="Porta 2" Height="150" Width="150" Click="ManualDoorOpen">
                     2
                 </Button>
             </StackPanel>

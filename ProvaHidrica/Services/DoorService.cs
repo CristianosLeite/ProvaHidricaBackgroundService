@@ -1,12 +1,12 @@
-﻿using ProvaHidrica.Components;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
+using ProvaHidrica.Components;
 using ProvaHidrica.Devices.Plc;
 using ProvaHidrica.Interfaces;
 using ProvaHidrica.Settings;
 using ProvaHidrica.Types;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace ProvaHidrica.Services
 {
@@ -53,7 +53,7 @@ namespace ProvaHidrica.Services
                                 new Action(() =>
                                 {
                                     CloseDoor(associatedDoor, intDoor);
-                                    MainApplication.DoorInput.Text = "0";
+                                    //MainApplication.DoorInput.Text = "0";
                                     MainApplication.StatusInput.Text = "Aguardando leitura...";
                                 })
                             );
@@ -225,8 +225,8 @@ namespace ProvaHidrica.Services
             command.SetOpen();
             StartFlashing(control, command, door);
 
-            if (door > 10)
-                MainApplication.DoorInput.Text = door.ToString();
+            //if (door > 10)
+            //    MainApplication.DoorInput.Text = door.ToString();
         }
 
         public void CloseDoor(Control control, int door)

@@ -1,6 +1,6 @@
-﻿using PCSC;
+﻿using System.Diagnostics;
+using PCSC;
 using PCSC.Monitoring;
-using System.Diagnostics;
 
 namespace ProvaHidrica.Devices.Nfc
 {
@@ -12,14 +12,17 @@ namespace ProvaHidrica.Devices.Nfc
         private bool buzzerOnOff = false;
 
         public event CardInsertedHandler CardInserted;
-        public delegate void CardInsertedHandler(ICardReader reader);
+        public delegate string? CardInsertedHandler(ICardReader reader);
 
         public event CardRemovedHandler CardRemoved;
         public delegate void CardRemovedHandler();
 
         public ACR122U()
         {
-            CardInserted = delegate { };
+            CardInserted = static delegate
+            {
+                return null;
+            };
             CardRemoved = delegate { };
         }
 

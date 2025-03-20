@@ -1,10 +1,10 @@
-﻿using ProvaHidrica.Components;
-using ProvaHidrica.Interfaces;
-using ProvaHidrica.Utils;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ProvaHidrica.Components;
+using ProvaHidrica.Interfaces;
+using ProvaHidrica.Utils;
 
 namespace ProvaHidrica.Services
 {
@@ -35,21 +35,20 @@ namespace ProvaHidrica.Services
                 MainApplication.ModeButton.Foreground = Brushes.LightBlue;
                 MainApplication.ModeButton.ToolTip = "Modo manual";
                 MainApplication.ModeIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Hand;
-                //MainApplication.PartnumberInput.IsEnabled = true;
                 MainApplication.VPInput.IsEnabled = true;
                 MainApplication.CISInput.IsEnabled = true;
+                MainApplication.ChassisInput.IsEnabled = true;
                 IsMaintenance = false;
                 return;
             }
             try
             {
-                MainApplication.InitializeCodeBarsReader();
                 MainApplication.ModeButton.Foreground = Brushes.LightGreen;
                 MainApplication.ModeButton.ToolTip = "Modo automático";
                 MainApplication.ModeIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Automatic;
-                //MainApplication.PartnumberInput.IsEnabled = false;
                 MainApplication.VPInput.IsEnabled = false;
                 MainApplication.CISInput.IsEnabled = false;
+                MainApplication.ChassisInput.IsEnabled = false;
                 IsMaintenance = false;
             }
             catch (Exception)
@@ -106,7 +105,6 @@ namespace ProvaHidrica.Services
             MainApplication.ModeIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Tools;
             MainApplication.ModeButton.Foreground = Brushes.Orange;
             MainApplication.ModeButton.ToolTip = "Modo de manutenção";
-            //MainApplication.PartnumberInput.IsEnabled = true;
             MainApplication.VPInput.IsEnabled = true;
             MainApplication.CISInput.IsEnabled = true;
             IsAutomatic = false;

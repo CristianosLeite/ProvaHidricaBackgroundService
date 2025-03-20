@@ -2,6 +2,7 @@
 {
     public enum Event
     {
+        Open,
         Reading,
         Selection
     }

@@ -17,24 +17,13 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,364" Grid.RowSpan="2" Width="800">
             
         <TextBox x:Name="TbPartnumber" VerticalAlignment="Top"
              HorizontalAlignment="Left"
              Width="184"
-             materialDesign:HintAssist.Hint="VP / Partnumber"
+             materialDesign:HintAssist.Hint="VP / Chassi / CIS"
              MaxLength="15"
-             IsUndoEnabled="False"
-             Margin="5 5 20 5"
-             UndoLimit="98"
-             SelectionChanged="OnTbFilterChange"
-        />
-
-        <TextBox x:Name="TbDoor" VerticalAlignment="Top"
-             HorizontalAlignment="Left"
-             Width="50"
-             materialDesign:HintAssist.Hint="Porta"
-             MaxLength="2"
              IsUndoEnabled="False"
              Margin="5 5 20 5"
              UndoLimit="98"

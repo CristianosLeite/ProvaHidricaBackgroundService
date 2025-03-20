@@ -1,10 +1,10 @@
-﻿using ProvaHidrica.Database;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Effects;
+using ProvaHidrica.Database;
 using ProvaHidrica.Models;
 using ProvaHidrica.Services;
 using ProvaHidrica.Windows;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Effects;
 
 namespace ProvaHidrica.Components
 {

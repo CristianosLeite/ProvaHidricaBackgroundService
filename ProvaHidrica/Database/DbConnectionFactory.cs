@@ -1,6 +1,6 @@
-﻿using Npgsql;
+﻿using System.Windows;
+using Npgsql;
 using ProvaHidrica.Interfaces;
-using System.Windows;
 
 namespace ProvaHidrica.Database
 {
@@ -10,7 +10,9 @@ namespace ProvaHidrica.Database
         {
             try
             {
-                var connectionString = Environment.GetEnvironmentVariable("PROVA_HIDRICA_DB_CONNECTION");
+                var connectionString = Environment.GetEnvironmentVariable(
+                    "PROVA_HIDRICA_DB_CONNECTION"
+                );
                 return new NpgsqlConnection(connectionString);
             }
             catch (Exception ex)

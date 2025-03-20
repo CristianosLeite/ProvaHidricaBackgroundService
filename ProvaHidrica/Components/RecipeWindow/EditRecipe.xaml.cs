@@ -1,11 +1,10 @@
-﻿using ProvaHidrica.Database;
+﻿using System.Reactive.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using ProvaHidrica.Database;
 using ProvaHidrica.Models;
 using ProvaHidrica.Types;
 using ProvaHidrica.Windows;
-using System.Collections.ObjectModel;
-using System.Reactive.Linq;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace ProvaHidrica.Components
 {
@@ -14,12 +13,9 @@ namespace ProvaHidrica.Components
     /// </summary>
     public partial class EditRecipe : UserControl
     {
-        private readonly Db db;
+        private readonly Db _db;
         private readonly AppRecipe _createRecipe;
         private readonly Context context;
-        //public ObservableCollection<Partnumber> Partnumbers = [];
-        //private readonly List<Partnumber> AssociatedPartnumbers = [];
-        //private List<Partnumber> FilteredPartnumbers = [];
         private readonly long? RecipeId = null;
         private int Index;
 
@@ -30,7 +26,7 @@ namespace ProvaHidrica.Components
             this.context = context;
 
             DbConnectionFactory connectionFactory = new();
-            db = new(connectionFactory);
+            _db = new(connectionFactory);
 
             if (context == Context.Update)
             {
@@ -46,154 +42,64 @@ namespace ProvaHidrica.Components
             RecipeId = recipe.RecipeId;
             TbVP.Text = recipe.Vp;
             Description.Text = recipe.Description;
-            //AssociatedPartnumbers = recipe.Partnumbers;
-
-            //var describeAssociatedPartnumbers = AssociatedPartnumbers.Select(p =>
-            //    p.Code + " - " + p.Description
-            //);
-            //lbAssociatedPartnumbers.ItemsSource ??= describeAssociatedPartnumbers;
-
-            //LoadPartnumbers();
-        }
-
-        public void LoadPartnumbers()
-        {
-            //Partnumbers = db.LoadPartnumberList();
-
-            //// Filtra os partnumbers que não estão em AssociatedPartnumbers
-            //FilteredPartnumbers = Partnumbers
-            //    .Where(p => !AssociatedPartnumbers.Any(ap => ap.Code == p.Code))
-            //    .ToList();
-
-            //var describePartnumbers = FilteredPartnumbers.Select(p =>
-            //    p.Code + " - " + p.Description
-            //);
-            //lbPartnumbers.ItemsSource ??= describePartnumbers;
+            SprinklerHeight.Text = recipe.SprinklerHeight.ToString();
         }
 
         public void SelectedItemChanged(object sender, RoutedEventArgs e)
         {
-            Index = lbPartnumbers.SelectedIndex;
+            Index = SprinklerHeight.SelectedIndex;
         }
 
         private void SelectionChanged(object sender, RoutedEventArgs e)
         {
-            //var describeAssociatedPartnumbers = AssociatedPartnumbers.Select(p =>
-            //    p.Code + " - " + p.Description
-            //);
-            //lbAssociatedPartnumbers.ClearValue(ItemsControl.ItemsSourceProperty);
-            //lbAssociatedPartnumbers.ItemsSource ??= describeAssociatedPartnumbers;
-
-            //lbPartnumbers.ClearValue(ItemsControl.ItemsSourceProperty);
-            //LoadPartnumbers();
-        }
-
-        private void AssociateBtnClick(object sender, RoutedEventArgs e)
-        {
-            //if (lbPartnumbers.SelectedIndex == -1)
-            //{
-            //    MessageBox.Show(
-            //        "Selecione um partnumber para associar",
-            //        "Erro",
-            //        MessageBoxButton.OK,
-            //        MessageBoxImage.Error
-            //    );
-            //    return;
-            //}
-
-            //if (Index < 0 || Index >= Partnumbers.Count)
-            //{
-            //    MessageBox.Show(
-            //        "Índice fora do intervalo",
-            //        "Erro",
-            //        MessageBoxButton.OK,
-            //        MessageBoxImage.Error
-            //    );
-            //    return;
-            //}
-
-            //AssociatedPartnumbers.Add(FilteredPartnumbers[Index]);
-            //Index = -1;
-
-            //SelectionChanged(sender, e);
-        }
-
-        private void RemoveAssociation(object sender, RoutedEventArgs e)
-        {
-            //if (lbAssociatedPartnumbers.SelectedIndex == -1)
-            //{
-            //    MessageBox.Show(
-            //        "Selecione um partnumber para desassociar",
-            //        "Erro",
-            //        MessageBoxButton.OK,
-            //        MessageBoxImage.Error
-            //    );
-            //    return;
-            //}
-
-            //AssociatedPartnumbers.RemoveAt(lbAssociatedPartnumbers.SelectedIndex);
-
-            //SelectionChanged(sender, e);
-
-            //Index = -1;
+            this.Index = SprinklerHeight.SelectedIndex;
         }
 
         private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            //try
-            //{
-            //    if (string.IsNullOrEmpty(TbVP.Text) || string.IsNullOrEmpty(Description.Text))
-            //    {
-            //        MessageBox.Show("Preencha todos os campos antes de salvar!", "Atenção");
-            //        return;
-            //    }
+            try
+            {
+                if (
+                    string.IsNullOrEmpty(TbVP.Text)
+                    || string.IsNullOrEmpty(Description.Text)
+                    || string.IsNullOrEmpty(SprinklerHeight.Text)
+                )
+                {
+                    MessageBox.Show("Preencha todos os campos antes de salvar!", "Atenção");
+                    return;
+                }
 
-            //    if (TbVP.Text.Length != 14)
-            //    {
-            //        MessageBox.Show("O VP deve conter 14 caracteres.", "Atenção");
-            //        return;
-            //    }
+                if (TbVP.Text.Length != 14)
+                {
+                    MessageBox.Show("O VP deve conter 14 caracteres.", "Atenção");
+                    return;
+                }
 
-            //    if (AssociatedPartnumbers.Count == 0)
-            //    {
-            //        MessageBox.Show("Adicione ao menos um partnumber à receita.", "Atenção");
-            //        return;
-            //    }
+                bool result = await _db.SaveRecipe(
+                    new(RecipeId, TbVP.Text, Description.Text, Index + 1),
+                    context
+                );
 
-            //    bool result = await db.SaveRecipe(
-            //        new(RecipeId, TbVP.Text, Description.Text),
-            //        AssociatedPartnumbers,
-            //        context
-            //    );
+                if (!result)
+                    return;
 
-            //    if (!result)
-            //        return;
+                MessageBox.Show(
+                    $"Receita {(context == Context.Create ? "cadastrada" : "atualizada")} com sucesso.",
+                    "Sucesso"
+                );
 
-            //    MessageBox.Show(
-            //        $"Receita {(context == Context.Create ? "cadastrada" : "atualizada")} com sucesso.",
-            //        "Sucesso"
-            //    );
-
-            //    _createRecipe.UpdateRecipeList();
-            //    SetInitialState();
-            //    Close();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Erro inexperado. " + ex.Message, "Erro");
-            //}
+                _createRecipe.UpdateRecipeList();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro inexperado. " + ex.Message, "Erro");
+            }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void SetInitialState()
-        {
-            TbVP.Text = string.Empty;
-            Description.Text = string.Empty;
-            lbAssociatedPartnumbers.ClearValue(ItemsControl.ItemsSourceProperty);
         }
 
         private void Close()

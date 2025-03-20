@@ -1,8 +1,8 @@
-﻿using ProvaHidrica.Settings;
+﻿using System.Reactive.Linq;
+using System.Text.RegularExpressions;
+using ProvaHidrica.Settings;
 using Sharp7.Rx;
 using Sharp7.Rx.Enums;
-using System.Reactive.Linq;
-using System.Text.RegularExpressions;
 
 namespace ProvaHidrica.Devices.Plc
 {

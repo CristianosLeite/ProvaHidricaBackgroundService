@@ -188,9 +188,15 @@ namespace ProvaHidrica.Components
                             Children =
                             {
                                 new TextBlock { Text = "RU - Ver usuários cadastrados" },
-                                new TextBlock { Text = "WU - Cadastrar / Editar / Excluir usuários" },
+                                new TextBlock
+                                {
+                                    Text = "WU - Cadastrar / Editar / Excluir usuários",
+                                },
                                 new TextBlock { Text = "RR - Ver receitas cadastradas" },
-                                new TextBlock { Text = "WR - Cadastrar / Editar / Excluir receitas" },
+                                new TextBlock
+                                {
+                                    Text = "WR - Cadastrar / Editar / Excluir receitas",
+                                },
                                 new TextBlock { Text = "OA - Operar automático" },
                                 new TextBlock { Text = "OM - Operar manual" },
                                 new TextBlock { Text = "RO - Ver histórico de operações" },

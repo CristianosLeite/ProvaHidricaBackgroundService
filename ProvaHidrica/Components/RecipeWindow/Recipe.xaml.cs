@@ -1,13 +1,12 @@
-﻿using ProvaHidrica.Database;
-using ProvaHidrica.Models;
-using ProvaHidrica.Types;
-using ProvaHidrica.Windows;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
+using ProvaHidrica.Database;
+using ProvaHidrica.Models;
+using ProvaHidrica.Types;
+using ProvaHidrica.Windows;
 
 namespace ProvaHidrica.Components
 {
@@ -47,7 +46,7 @@ namespace ProvaHidrica.Components
 
         private void CreateRecipe(object sender, RoutedEventArgs e)
         {
-            EditRecipe editRecipe = new(this, new Recipe(0, "", "" , 0), Context.Create);
+            EditRecipe editRecipe = new(this, new Recipe(null, "", "", 0), Context.Create);
             var parentWindow = Window.GetWindow(this) as RecipeWindow;
             parentWindow?.Main?.Children.Clear();
             parentWindow?.Main.Children.Add(editRecipe);
@@ -126,7 +125,7 @@ namespace ProvaHidrica.Components
             }
         }
 
-        private async void EditRecipe(object sender, RoutedEventArgs e)
+        private void EditRecipe(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -134,8 +133,6 @@ namespace ProvaHidrica.Components
 
                 if (rcpindex.DataContext is Recipe recipeObj)
                 {
-                    //var door = await db.GetAssociatedDoor(recipeObj.VP);
-
                     EditRecipe editRecipe = new(this, recipeObj, Context.Update);
                     var parentWindow = Window.GetWindow(this) as RecipeWindow;
                     parentWindow?.Main?.Children.Clear();
@@ -158,13 +155,13 @@ namespace ProvaHidrica.Components
             );
             if (result == MessageBoxResult.Yes)
             {
-                //bool isDeleted = await db.DeleteRecipe(_recipeList[Index].Vp);
-                //if (!isDeleted)
-                //    return;
+                bool isDeleted = await db.DeleteRecipe(_recipeList[Index]);
+                if (!isDeleted)
+                    return;
 
                 _recipeList.RemoveAt(Index);
 
-                MessageBox.Show("Partnumber excluído com sucesso!");
+                MessageBox.Show("Receita excluída com sucesso!");
             }
 
             dgRecipe.Items.Refresh();

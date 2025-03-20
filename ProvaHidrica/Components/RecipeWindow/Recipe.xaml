@@ -68,6 +68,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="VP" Binding="{Binding Vp}" Width="180"/>
                     <DataGridTextColumn Header="Descrição" Binding="{Binding Description}" Width="*"/>
+                    <DataGridTextColumn Header="Altura dos aspersores" Binding="{Binding SprinklerHeight}" Width="*"/>
                     <DataGridTemplateColumn Header="Edição" Width="SizeToCells" IsReadOnly="True" x:Name="binColumn">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

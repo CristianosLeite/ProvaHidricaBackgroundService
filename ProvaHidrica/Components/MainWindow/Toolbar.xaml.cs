@@ -1,7 +1,7 @@
-﻿using ProvaHidrica.Services;
-using ProvaHidrica.Windows;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using ProvaHidrica.Services;
+using ProvaHidrica.Windows;
 
 namespace ProvaHidrica.Components
 {
@@ -33,46 +33,34 @@ namespace ProvaHidrica.Components
 
         private void Reports_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(
-                "Funcionalidade em desenvolvimento.",
-                "Em breve",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information
-            );
-            //if (!Auth.UserHasPermission("ER"))
-            //{
-            //    MessageBox.Show(
-            //        "Você não tem permissão para acessar essa funcionalidade.",
-            //        "Acesso negado",
-            //        MessageBoxButton.OK,
-            //        MessageBoxImage.Error
-            //    );
-            //    return;
-            //}
-            //ReportWindow reports = new();
-            //reports.Show();
+            if (!Auth.UserHasPermission("ER"))
+            {
+                MessageBox.Show(
+                    "Você não tem permissão para acessar essa funcionalidade.",
+                    "Acesso negado",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+                return;
+            }
+            ReportWindow reports = new();
+            reports.Show();
         }
 
         private void Recipe_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(
-                "Funcionalidade em desenvolvimento.",
-                "Em breve",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information
-            );
-            //if (!Auth.UserHasPermission("RR"))
-            //{
-            //    MessageBox.Show(
-            //        "Você não tem permissão para acessar essa funcionalidade.",
-            //        "Acesso negado",
-            //        MessageBoxButton.OK,
-            //        MessageBoxImage.Error
-            //    );
-            //    return;
-            //}
-            //RecipeWindow recipe = new();
-            //recipe.Show();
+            if (!Auth.UserHasPermission("RR"))
+            {
+                MessageBox.Show(
+                    "Você não tem permissão para acessar essa funcionalidade.",
+                    "Acesso negado",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+                return;
+            }
+            RecipeWindow recipe = new();
+            recipe.Show();
         }
 
         private void Config_Click(object sender, RoutedEventArgs e)

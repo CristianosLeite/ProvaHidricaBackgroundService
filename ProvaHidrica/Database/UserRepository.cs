@@ -1,9 +1,9 @@
-﻿using Npgsql;
+﻿using System.Collections.ObjectModel;
+using Npgsql;
 using ProvaHidrica.Interfaces;
 using ProvaHidrica.Models;
 using ProvaHidrica.Types;
 using ProvaHidrica.Utils;
-using System.Collections.ObjectModel;
 
 namespace ProvaHidrica.Database
 {

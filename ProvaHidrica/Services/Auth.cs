@@ -17,7 +17,7 @@ namespace ProvaHidrica.Services
             db = new(connectionFactory);
         }
 
-        public async static void SetLoggedInUser(User user)
+        public static async void SetLoggedInUser(User user)
         {
             LoggedInUser = user;
             await db.LogUserLogin(user);
@@ -47,7 +47,7 @@ namespace ProvaHidrica.Services
             return LoggedInUser?.HasPermission(permission) ?? false;
         }
 
-        public async static void Logout()
+        public static async void Logout()
         {
             await db.LogUserLogout(LoggedInUser!);
             LoggedInUser = null;

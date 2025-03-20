@@ -1,10 +1,9 @@
-﻿using ProvaHidrica.Database;
-using ProvaHidrica.Models;
-using ProvaHidrica.Services;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using ProvaHidrica.Database;
+using ProvaHidrica.Models;
 
 namespace ProvaHidrica.Components
 {

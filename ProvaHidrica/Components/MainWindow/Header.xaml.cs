@@ -1,11 +1,11 @@
-﻿using ProvaHidrica.Database;
-using ProvaHidrica.Devices.Plc;
-using ProvaHidrica.Windows;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ProvaHidrica.Database;
+using ProvaHidrica.Devices.Plc;
+using ProvaHidrica.Windows;
 
 namespace ProvaHidrica.Components
 {
@@ -104,7 +104,7 @@ namespace ProvaHidrica.Components
         private void CloseApplication(object sender, RoutedEventArgs e)
         {
             (Application.Current.MainWindow).Close();
-            App.Current.Shutdown();
+            //App.Current.Shutdown();
         }
 
         private void UserButton_Click(object sender, RoutedEventArgs e)

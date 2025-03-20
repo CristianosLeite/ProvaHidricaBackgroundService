@@ -1,9 +1,8 @@
-﻿using ProvaHidrica.Devices.Plc;
+﻿using System.Diagnostics;
+using ProvaHidrica.Devices.Plc;
 using ProvaHidrica.Interfaces;
 using ProvaHidrica.Settings;
 using ProvaHidrica.Types;
-using ProvaHidrica.Services;
-using System.Diagnostics;
 
 namespace ProvaHidrica.Services
 {

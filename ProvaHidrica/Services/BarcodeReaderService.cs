@@ -1,25 +1,24 @@
-﻿using ProvaHidrica.Devices.CodebarsReader;
-using ProvaHidrica.Interfaces;
-using System.Windows.Threading;
+﻿using System.Windows.Threading;
+using ProvaHidrica.Devices.BarcodeReader;
 
 namespace ProvaHidrica.Services
 {
-    public class BarcodeReaderService : IBarcodeReaderService
+    public static class BarcodeReaderService
     {
-        private readonly BarcodeReader _codebarsReader;
-        private readonly DispatcherTimer _timer;
-        public bool IsConnected = false;
+        private static readonly BarcodeReader _codebarsReader;
+        private static readonly DispatcherTimer _timer;
+        private static bool IsConnected = false;
 
-        public event EventHandler<string>? DataReceived;
+        public static event EventHandler<string>? DataReceived;
 
-        public BarcodeReaderService()
+        static BarcodeReaderService()
         {
             _codebarsReader = new BarcodeReader();
             _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             _timer.Tick += Timer_Tick;
         }
 
-        public void InitializeCodeBarsReader()
+        public static void InitializeCodeBarsReader()
         {
             try
             {
@@ -34,29 +33,29 @@ namespace ProvaHidrica.Services
             }
         }
 
-        public bool IsCodeBarsReaderConnected()
+        public static bool IsBarcodeReaderConnected()
         {
             return IsConnected;
         }
 
-        private void Timer_Tick(object? sender, EventArgs e)
+        private static void Timer_Tick(object? sender, EventArgs e)
         {
             var data = _codebarsReader.GetData().TrimEnd();
             OnDataReceived(data);
         }
 
-        protected virtual void OnDataReceived(string data)
+        private static void OnDataReceived(string data)
         {
             if (data.Length > 0)
-                DataReceived?.Invoke(this, data);
+                DataReceived?.Invoke(null, data);
         }
 
-        public void SubscribeReader(EventHandler<string> handler)
+        public static void SubscribeReader(EventHandler<string> handler)
         {
             DataReceived += handler;
         }
 
-        public void ClearData()
+        public static void ClearData()
         {
             _codebarsReader.ClearComPort();
         }

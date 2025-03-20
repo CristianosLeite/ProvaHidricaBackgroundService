@@ -1,10 +1,10 @@
-﻿using Npgsql;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
+using Npgsql;
 using ProvaHidrica.Interfaces;
 using ProvaHidrica.Models;
 using ProvaHidrica.Services;
 using ProvaHidrica.Types;
-using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace ProvaHidrica.Database
 {
@@ -13,6 +13,7 @@ namespace ProvaHidrica.Database
         protected readonly IDbConnectionFactory _connectionFactory = null!;
         protected readonly IUserRepository _userRepository = null!;
         protected readonly IRecipeRepository _recipeRepository = null!;
+        protected readonly IOperationRepository _operationRepository = null!;
         protected readonly ILogRepository _logRepository = null!;
 
         public Db(IDbConnectionFactory connectionFactory)
@@ -23,13 +24,11 @@ namespace ProvaHidrica.Database
             {
                 _userRepository = new UserRepository(connectionFactory);
                 _recipeRepository = new RecipeRepository(connectionFactory);
+                _operationRepository = new OperationRepository(connectionFactory);
                 _logRepository = new LogRepository(connectionFactory);
 
-                CreateUsersTable();
                 CreateSysLogTable();
                 CreateUserLogTable();
-                CreateOperationTable();
-                CreateRecipeTable();
             }
             catch (Exception)
             {
@@ -77,36 +76,6 @@ namespace ProvaHidrica.Database
         private static void ShowErrorMessage(string message)
         {
             MessageBox.Show(message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-
-        // <summary>
-        // Create a table for users
-        // </summary>
-        private static void CreateUsersTable()
-        {
-            try
-            {
-                using var connection = GetConnection();
-                connection.Open();
-
-                var createTableCommand = new NpgsqlCommand(
-                    "CREATE TABLE IF NOT EXISTS public.users ("
-                        + "id character varying COLLATE pg_catalog.\"default\" NOT NULL, "
-                        + "badge_number character varying COLLATE pg_catalog.\"default\" NOT NULL, "
-                        + "user_name character varying COLLATE pg_catalog.\"default\" NOT NULL, "
-                        + "permissions character varying[] COLLATE pg_catalog.\"default\", "
-                        + "CONSTRAINT users_pkey PRIMARY KEY (id)) "
-                        + "TABLESPACE pg_default; "
-                        + "ALTER TABLE IF EXISTS public.users OWNER to postgres;",
-                    connection
-                );
-
-                createTableCommand.ExecuteNonQuery();
-            }
-            catch (PostgresException e)
-            {
-                ShowErrorMessage("Não foi possível criar a tabela de usuários." + e);
-            }
         }
 
         // <summary>
@@ -173,73 +142,6 @@ namespace ProvaHidrica.Database
             }
         }
 
-        // <summary>
-        // Create operations table
-        // </summary>
-        private static void CreateOperationTable()
-        {
-            try
-            {
-                using var connection = GetConnection();
-                connection.Open();
-
-                var createTableCommand = new NpgsqlCommand(
-                    "CREATE TABLE IF NOT EXISTS public.Operations ("
-                        + "id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ("
-                        + "INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1), "
-                        + "CreatedAt timestamp without time zone NOT NULL, "
-                        + "Event character varying COLLATE pg_catalog.\"default\" NOT NULL, "
-                        + "Target character varying COLLATE pg_catalog.\"default\", "
-                        + "Cis character varying COLLATE pg_catalog.\"default\", "
-                        + "Door character varying COLLATE pg_catalog.\"default\" NOT NULL, "
-                        + "Mode character varying COLLATE pg_catalog.\"default\" NOT NULL, "
-                        + "UserId character varying COLLATE pg_catalog.\"default\" NOT NULL, "
-                        + "CONSTRAINT Operations_pkey PRIMARY KEY (id)) "
-                        + "TABLESPACE pg_default; "
-                        + "ALTER TABLE IF EXISTS public.Operations OWNER to postgres;",
-                    connection
-                );
-
-                createTableCommand.ExecuteNonQuery();
-            }
-            catch (PostgresException e)
-            {
-                ShowErrorMessage("Não foi possível criar a tabela de relatórios." + e);
-            }
-        }
-
-        // <summary>
-        // Create recipe table
-        // </summary>
-        private static void CreateRecipeTable()
-        {
-            try
-            {
-                using var connection = GetConnection();
-                connection.Open();
-
-                var createTableCommand = new NpgsqlCommand(
-                    "CREATE TABLE IF NOT EXISTS public.Recipes ("
-                        + "recipe_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ("
-                        + "INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1), "
-                        + "description character varying COLLATE pg_catalog.\"default\" NOT NULL, "
-                        + "vp character varying COLLATE pg_catalog.\"default\" NOT NULL, "
-                        + "sprinkler_height"
-                        + " integer NOT NULL, "
-                        + "CONSTRAINT Recipes_pkey PRIMARY KEY (recipe_id)) "
-                        + "TABLESPACE pg_default; "
-                        + "ALTER TABLE IF EXISTS public.Recipes OWNER to postgres;",
-                    connection
-                );
-
-                createTableCommand.ExecuteNonQuery();
-            }
-            catch (PostgresException e)
-            {
-                ShowErrorMessage("Não foi possível criar a tabela de receitas." + e);
-            }
-        }
-
         public ObservableCollection<User> LoadUsersList()
         {
             return _userRepository.LoadUsersList();
@@ -287,6 +189,20 @@ namespace ProvaHidrica.Database
         {
             await _logRepository.LogUserDeleteRecipe(Auth.LoggedInUser!, recipe);
             return await _recipeRepository.DeleteRecipe(recipe.Vp);
+        }
+
+        public async Task<ObservableCollection<Operation>> LoadOperations()
+        {
+            return await _operationRepository.LoadOperations();
+        }
+
+        public async Task<List<Operation>> GetOperationsByDate(
+            string opInfo,
+            string initialDate,
+            string finalDate
+        )
+        {
+            return await _operationRepository.GetOperationsByDate(opInfo, initialDate, finalDate);
         }
 
         public async Task<List<Log>> LoadLogs()

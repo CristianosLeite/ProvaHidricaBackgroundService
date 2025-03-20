@@ -1,9 +1,9 @@
-﻿using ProvaHidrica.Database;
-using ProvaHidrica.Models;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using ProvaHidrica.Database;
+using ProvaHidrica.Models;
 
 namespace ProvaHidrica.Windows
 {
@@ -31,26 +31,32 @@ namespace ProvaHidrica.Windows
             dgLogs.CanUserResizeRows = false;
             dgLogs.CanUserSortColumns = false;
 
-            dgLogs.Columns.Add(new DataGridTextColumn
-            {
-                Header = "Data e hora",
-                Binding = new Binding("CreatedAt"),
-                Width = new DataGridLength(1, DataGridLengthUnitType.Star)
-            });
+            dgLogs.Columns.Add(
+                new DataGridTextColumn
+                {
+                    Header = "Data e hora",
+                    Binding = new Binding("CreatedAt"),
+                    Width = new DataGridLength(1, DataGridLengthUnitType.Star),
+                }
+            );
 
-            dgLogs.Columns.Add(new DataGridTextColumn
-            {
-                Header = "Evento",
-                Binding = new Binding("Event"),
-                Width = new DataGridLength(1, DataGridLengthUnitType.Star)
-            });
+            dgLogs.Columns.Add(
+                new DataGridTextColumn
+                {
+                    Header = "Evento",
+                    Binding = new Binding("Event"),
+                    Width = new DataGridLength(1, DataGridLengthUnitType.Star),
+                }
+            );
 
-            dgLogs.Columns.Add(new DataGridTextColumn
-            {
-                Header = "Alvo",
-                Binding = new Binding("Target"),
-                Width = new DataGridLength(1, DataGridLengthUnitType.Star)
-            });
+            dgLogs.Columns.Add(
+                new DataGridTextColumn
+                {
+                    Header = "Alvo",
+                    Binding = new Binding("Target"),
+                    Width = new DataGridLength(1, DataGridLengthUnitType.Star),
+                }
+            );
 
             Logs = [];
             DataContext = this;
