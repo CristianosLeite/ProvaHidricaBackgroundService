@@ -21,10 +21,10 @@
                     <materialDesign:PackIcon Kind="Close"/>
                 </StackPanel>
             </Button>
-            <TextBox x:Name="TbVP" VerticalAlignment="Top"
+            <TextBox x:Name="TbKey" VerticalAlignment="Top"
                 HorizontalAlignment="Left"
                 Width="184"
-                materialDesign:HintAssist.Hint="VP" Margin="19,144,0,0" MaxLength="14" IsUndoEnabled="False" UndoLimit="98"/>
+                materialDesign:HintAssist.Hint="VP ou CIS" Margin="19,144,0,0" MaxLength="14" IsUndoEnabled="False" UndoLimit="98"/>
             <TextBox x:Name="Description" VerticalAlignment="Top"
                 HorizontalAlignment="Left"
                 Width="278"

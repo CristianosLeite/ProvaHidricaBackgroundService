@@ -21,7 +21,7 @@ namespace ProvaHidrica.Database
                 var recipeList = new ObservableCollection<Recipe>();
 
                 using var command = new NpgsqlCommand(
-                    "SELECT recipe_id, vp, description, sprinkler_height FROM public.recipes;",
+                    "SELECT recipe_id, vp, cis, description, sprinkler_height FROM public.recipes;",
                     connection
                 );
                 using var reader = command.ExecuteReader();
@@ -31,9 +31,10 @@ namespace ProvaHidrica.Database
                     Recipe recipe =
                         new(
                             reader.GetInt32(0), // RecipeId
-                            reader.GetString(1), // Vp
-                            reader.GetString(2), // Description
-                            reader.GetInt32(3) // SprinklerHeight
+                            reader.IsDBNull(1) ? string.Empty : reader.GetString(1), // Vp
+                            reader.IsDBNull(2) ? string.Empty : reader.GetString(2), // Cis
+                            reader.GetString(3), // Description
+                            reader.GetInt32(4) // SprinklerHeight
                         );
 
                     Db db = new(_connectionFactory);
@@ -57,7 +58,7 @@ namespace ProvaHidrica.Database
                 await connection!.OpenAsync();
 
                 using var command = new NpgsqlCommand(
-                    "SELECT recipe_id, vp, description, sprinkler_height FROM public.recipes WHERE vp = @vp;",
+                    "SELECT recipe_id, vp, cis, description, sprinkler_height FROM public.recipes WHERE vp = @vp;",
                     connection
                 );
 
@@ -70,7 +71,8 @@ namespace ProvaHidrica.Database
 
                 var recipe = new Recipe(
                     reader.GetInt64(0), // RecipeId
-                    reader.GetString(1), // VP
+                    reader.IsDBNull(1) ? string.Empty : reader.GetString(1), // Vp
+                    reader.IsDBNull(2) ? string.Empty : reader.GetString(2), // Cis
                     reader.GetString(2), // Description
                     reader.GetInt32(3) // SprinklerHeight
                 );
@@ -93,15 +95,16 @@ namespace ProvaHidrica.Database
 
                 var command = new NpgsqlCommand(
                     recipe.RecipeId == null
-                        ? "INSERT INTO public.recipes (vp, description, sprinkler_height) VALUES (@vp, @description, @sprinklerHeight) RETURNING recipe_id;"
-                        : "UPDATE public.recipes SET vp = @vp, description = @description, sprinkler_height = @sprinklerHeight WHERE recipe_id = @recipeId;",
+                        ? "INSERT INTO public.recipes (vp, cis, description, sprinkler_height) VALUES (@vp, @cis, @description, @sprinklerHeight) RETURNING recipe_id;"
+                        : "UPDATE public.recipes SET vp = @vp, cis = @cis, description = @description, sprinkler_height = @sprinklerHeight WHERE recipe_id = @recipeId;",
                     connection
                 );
 
                 if (recipe.RecipeId != null)
                     command.Parameters.AddWithValue("@recipeId", recipe.RecipeId);
 
-                command.Parameters.AddWithValue("@vp", recipe.Vp);
+                command.Parameters.AddWithValue("@vp", recipe.Vp!);
+                command.Parameters.AddWithValue("@cis", recipe.Cis!);
                 command.Parameters.AddWithValue("@description", recipe.Description);
                 command.Parameters.AddWithValue("@sprinklerHeight", recipe.SprinklerHeight);
 
@@ -116,7 +119,7 @@ namespace ProvaHidrica.Database
             }
         }
 
-        public async Task<bool> DeleteRecipe(string vp)
+        public async Task<bool> DeleteRecipe(long? id)
         {
             try
             {
@@ -124,10 +127,10 @@ namespace ProvaHidrica.Database
                 connection!.Open();
 
                 var deleteCommand = new NpgsqlCommand(
-                    "DELETE FROM public.recipes WHERE vp = @vp;",
+                    "DELETE FROM public.recipes WHERE recipe_id = @id;",
                     connection
                 );
-                deleteCommand.Parameters.AddWithValue("@vp", vp);
+                deleteCommand.Parameters.AddWithValue("@id", id!);
                 await deleteCommand.ExecuteNonQueryAsync();
 
                 return true;

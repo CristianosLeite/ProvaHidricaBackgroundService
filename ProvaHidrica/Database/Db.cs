@@ -188,7 +188,7 @@ namespace ProvaHidrica.Database
         public async Task<bool> DeleteRecipe(Recipe recipe)
         {
             await _logRepository.LogUserDeleteRecipe(Auth.LoggedInUser!, recipe);
-            return await _recipeRepository.DeleteRecipe(recipe.Vp);
+            return await _recipeRepository.DeleteRecipe(recipe.RecipeId);
         }
 
         public async Task<ObservableCollection<Operation>> LoadOperations()
