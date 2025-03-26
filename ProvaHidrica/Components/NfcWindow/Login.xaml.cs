@@ -1,10 +1,10 @@
-﻿using ProvaHidrica.Database;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Effects;
+using ProvaHidrica.Database;
 using ProvaHidrica.Models;
 using ProvaHidrica.Services;
 using ProvaHidrica.Windows;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Effects;
 
 namespace ProvaHidrica.Components
 {
@@ -48,6 +48,7 @@ namespace ProvaHidrica.Components
                 Auth.SetLoggedInUser(user);
                 Auth.SetLoggedAt(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
                 Window.GetWindow(this)!.Close();
+                await Api.SendMessageAsync("authenticated", user);
             }
             else
             {

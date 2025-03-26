@@ -1,9 +1,9 @@
-﻿using Npgsql;
+﻿using System.Collections.ObjectModel;
+using Npgsql;
 using ProvaHidrica.Interfaces;
 using ProvaHidrica.Models;
 using ProvaHidrica.Types;
 using ProvaHidrica.Utils;
-using System.Collections.ObjectModel;
 
 namespace ProvaHidrica.Database
 {
@@ -16,24 +16,25 @@ namespace ProvaHidrica.Database
             try
             {
                 using var connection = _connectionFactory.GetConnection();
-                connection.Open();
+                connection?.Open();
 
                 var recipeList = new ObservableCollection<Recipe>();
 
                 using var command = new NpgsqlCommand(
-                    "SELECT recipe_id, description, sprinkler_height FROM public.recipes;",
+                    "SELECT recipe_id, vp, description, sprinkler_height FROM public.recipes;",
                     connection
                 );
                 using var reader = command.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    Recipe recipe = new(
-                        reader.GetInt32(0), // RecipeId
-                        reader.GetString(1), // Description
-                        reader.GetString(2), // VP
-                        reader.GetInt32(3) // SprinklerHeight
-                    );
+                    Recipe recipe =
+                        new(
+                            reader.GetInt32(0), // RecipeId
+                            reader.GetString(1), // Vp
+                            reader.GetString(2), // Description
+                            reader.GetInt32(3) // SprinklerHeight
+                        );
 
                     Db db = new(_connectionFactory);
 
@@ -52,12 +53,12 @@ namespace ProvaHidrica.Database
         {
             try
             {
-                using var conn = _connectionFactory.GetConnection();
-                await conn.OpenAsync();
+                using var connection = _connectionFactory.GetConnection();
+                await connection!.OpenAsync();
 
                 using var command = new NpgsqlCommand(
                     "SELECT recipe_id, vp, description, sprinkler_height FROM public.recipes WHERE vp = @vp;",
-                    conn
+                    connection
                 );
 
                 command.Parameters.AddWithValue("@vp", vp);
@@ -83,19 +84,16 @@ namespace ProvaHidrica.Database
             }
         }
 
-        public async Task<bool> SaveRecipe(
-            Recipe recipe,
-            Context context
-        )
+        public async Task<bool> SaveRecipe(Recipe recipe, Context context)
         {
             try
             {
                 using var connection = _connectionFactory.GetConnection();
-                await connection.OpenAsync();
+                await connection!.OpenAsync();
 
                 var command = new NpgsqlCommand(
                     recipe.RecipeId == null
-                        ? "INSERT INTO public.recipes (vp, description, sprinkler_height) VALUES (@vp, @description @sprinklerHeight) RETURNING recipe_id;"
+                        ? "INSERT INTO public.recipes (vp, description, sprinkler_height) VALUES (@vp, @description, @sprinklerHeight) RETURNING recipe_id;"
                         : "UPDATE public.recipes SET vp = @vp, description = @description, sprinkler_height = @sprinklerHeight WHERE recipe_id = @recipeId;",
                     connection
                 );
@@ -105,17 +103,9 @@ namespace ProvaHidrica.Database
 
                 command.Parameters.AddWithValue("@vp", recipe.Vp);
                 command.Parameters.AddWithValue("@description", recipe.Description);
+                command.Parameters.AddWithValue("@sprinklerHeight", recipe.SprinklerHeight);
 
-                long recipeId;
-                if (recipe.RecipeId == null)
-#pragma warning disable CS8605 // If the value is null, an exception will be thrown
-                    recipeId = (long)await command.ExecuteScalarAsync();
-#pragma warning restore CS8605
-                else
-                {
-                    await command.ExecuteNonQueryAsync();
-                    recipeId = recipe.RecipeId.Value;
-                }
+                await command.ExecuteNonQueryAsync();
 
                 return true;
             }
@@ -123,7 +113,6 @@ namespace ProvaHidrica.Database
             {
                 ErrorMessage.Show("Erro ao salvar a receita." + e);
                 return false;
-                throw;
             }
         }
 
@@ -132,7 +121,7 @@ namespace ProvaHidrica.Database
             try
             {
                 using var connection = _connectionFactory.GetConnection();
-                connection.Open();
+                connection!.Open();
 
                 var deleteCommand = new NpgsqlCommand(
                     "DELETE FROM public.recipes WHERE vp = @vp;",

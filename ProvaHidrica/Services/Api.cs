@@ -14,7 +14,7 @@ namespace ProvaHidrica.Services
     static class Api
     {
         private static readonly HttpClient client = new();
-        private static readonly SocketIOClient.SocketIO socket = new("https://prova-hidrica:4000");
+        private static readonly SocketIOClient.SocketIO socket = new("https://localhost:4000");
         private static readonly Db db;
         private static readonly Timer timer;
 
@@ -104,10 +104,10 @@ namespace ProvaHidrica.Services
         {
             Debug.WriteLine(response.ToString());
             var userJson = response.GetValue<JsonElement>(0);
-            string? badgeNumber = userJson.GetProperty("badge_number").GetString();
-            string? userName = userJson.GetProperty("user_name").GetString();
+            string? badgeNumber = userJson.GetProperty("BadgeNumber").GetString();
+            string? userName = userJson.GetProperty("UserName").GetString();
             List<string>? permissions = JsonSerializer.Deserialize<List<string>>(
-                userJson.GetProperty("permissions").GetRawText()
+                userJson.GetProperty("Permissions").GetRawText()
             );
 
             if (badgeNumber != null && userName != null && permissions != null)

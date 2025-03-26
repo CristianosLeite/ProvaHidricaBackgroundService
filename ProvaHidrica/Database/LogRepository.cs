@@ -14,9 +14,12 @@ namespace ProvaHidrica.Database
         // </summary>
         public async Task SaveLog(Log log)
         {
-            using var connection = _connectionFactory.GetConnection();
+            using var connection =
+                _connectionFactory.GetConnection()
+                ?? throw new InvalidOperationException(
+                    "Não foi possível obter a conexão com o banco de dados."
+                );
             await connection.OpenAsync();
-
             string query = log switch
             {
                 SysLog sysLog =>
@@ -51,14 +54,18 @@ namespace ProvaHidrica.Database
         public async Task<List<Log>> LoadLogs()
         {
             var logs = new List<Log>();
-            using var connection = _connectionFactory.GetConnection();
+            using var connection =
+                _connectionFactory.GetConnection()
+                ?? throw new InvalidOperationException(
+                    "Não foi possível obter a conexão com o banco de dados."
+                );
             await connection.OpenAsync();
 
             string[] queries =
             {
                 "SELECT CreatedAt, Event, Target, Device FROM SysLogs ORDER BY CreatedAt DESC LIMIT 200",
                 "SELECT CreatedAt, Event, Target, UserId FROM UserLogs ORDER BY CreatedAt DESC LIMIT 200",
-                "SELECT CreatedAt, Event, Target, Van, Door, Mode, UserId FROM Operations ORDER BY CreatedAt DESC LIMIT 200",
+                "SELECT CreatedAt, Event, Target, Door, Mode, UserId FROM Operations ORDER BY CreatedAt DESC LIMIT 200",
             };
 
             foreach (var query in queries)
@@ -103,7 +110,11 @@ namespace ProvaHidrica.Database
         {
             var userLogs = new List<UserLog>();
 
-            using var connection = _connectionFactory.GetConnection();
+            using var connection =
+                _connectionFactory.GetConnection()
+                ?? throw new InvalidOperationException(
+                    "Não foi possível obter a conexão com o banco de dados."
+                );
             connection.Open();
 
             var query =
@@ -129,7 +140,7 @@ namespace ProvaHidrica.Database
                 var user_name = reader.GetString(5);
 
                 userLogs.Add(
-                    new UserLog(createdAt, @event, target, new User(userId, "0", user_name, []))
+                    new UserLog(createdAt, @event, target, new User(userId, user_name, "0", []))
                 );
             }
 
@@ -143,7 +154,11 @@ namespace ProvaHidrica.Database
         {
             var sysLogs = new List<SysLog>();
 
-            using var connection = _connectionFactory.GetConnection();
+            using var connection =
+                _connectionFactory.GetConnection()
+                ?? throw new InvalidOperationException(
+                    "Não foi possível obter a conexão com o banco de dados."
+                );
             connection.Open();
 
             var query =
@@ -177,7 +192,7 @@ namespace ProvaHidrica.Database
         // </summary>
         public async Task LogUserLogin(User user)
         {
-            UserLog userLog = new(DateTime.Now, "Usuário logado", user.UserName, user);
+            UserLog userLog = new(DateTime.Now, "Usuário logado", user.BadgeNumber, user);
             await SaveLog(userLog);
         }
 
@@ -187,30 +202,6 @@ namespace ProvaHidrica.Database
         public async Task LogUserLogout(User user)
         {
             UserLog userLog = new(DateTime.Now, "Usuário deslogado", user.UserName, user);
-            await SaveLog(userLog);
-        }
-
-        // <summary>
-        // Log a user create or update a partnumber
-        // </summary>
-        public async Task LogUserEditPartnumber(User user, string partnumber, Context context)
-        {
-            string msg = context switch
-            {
-                Context.Create => "Partnumber cadastrado",
-                Context.Update => "Partnumber alterado",
-                _ => throw new InvalidOperationException("Contexto desconhecido"),
-            };
-            UserLog userLog = new(DateTime.Now, msg, partnumber, user);
-            await SaveLog(userLog);
-        }
-
-        // <summary>
-        // Log a user delete a partnumber
-        // </summary>
-        public async Task LogUserDeletePartnumber(User user, string partnumber)
-        {
-            UserLog userLog = new(DateTime.Now, "Partnumber deletado", partnumber, user);
             await SaveLog(userLog);
         }
 

@@ -14,11 +14,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Components\MainWindow\logo-conecsa.png" />
     <None Remove="Windows\SplashScreen.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <Resource Include="Components\MainWindow\logo-conecsa.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,20 +33,32 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="FontAwesome" Version="4.7.0" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
     <PackageReference Include="MaterialDesignColors" Version="5.2.1" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="5.2.1" />
-    <PackageReference Include="Npgsql" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
     <PackageReference Include="PCSC" Version="7.0.0" />
-    <PackageReference Include="runtime.native.System.IO.Ports" Version="9.0.1" />
+    <PackageReference Include="runtime.native.System.IO.Ports" Version="9.0.3" />
     <PackageReference Include="Sharp7" Version="1.1.84" />
     <PackageReference Include="Sharp7.Rx" Version="2.0.17" />
     <PackageReference Include="SocketIOClient" Version="3.1.2" />
-    <PackageReference Include="System.IO.Ports" Version="9.0.1" />
-    <PackageReference Include="Telerik.FontIcons" Version="4.0.0" />
+    <PackageReference Include="System.IO.Ports" Version="9.0.3" />
+    <PackageReference Include="System.Text.Json" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Office.Interop.Excel">
+      <HintPath>bin\Debug\net9.0-windows\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +66,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Settings\SCodeBarsReader.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SCodeBarsReader.settings</DependentUpon>
+    </Compile>
     <Compile Update="Settings\SPlc.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
@@ -65,6 +87,10 @@
     <None Update="RegisterProtocol.ps1">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>RegisterProtocol.cs</LastGenOutput>
+    </None>
+    <None Update="Settings\SCodeBarsReader.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>SCodeBarsReader.Designer.cs</LastGenOutput>
     </None>
     <None Update="Settings\SPlc.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

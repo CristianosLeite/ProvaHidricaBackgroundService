@@ -1,4 +1,6 @@
-﻿using ProvaHidrica.Database;
+﻿using ProvaHidrica.Components;
+using ProvaHidrica.Database;
+using ProvaHidrica.Devices.Plc;
 using ProvaHidrica.Models;
 using ProvaHidrica.Services;
 using ProvaHidrica.Types;
@@ -16,10 +18,13 @@ namespace ProvaHidrica
     {
         private readonly NotifyIcon _notifyIcon;
         private bool _isExit;
-        private readonly BarcodeReaderService _codeBarsReaderService;
         private readonly Db _db;
+        private readonly NfcService _nfcService;
+        private readonly Plc _plc;
+        private readonly PlcService _plcService;
+        private readonly NfcService _nfcSerivce;
 
-        public MainWindow()
+        public MainWindow(Db db, NfcService nfcService, Plc plc, PlcService plcService)
         {
             _notifyIcon = new NotifyIcon
             {
@@ -31,11 +36,14 @@ namespace ProvaHidrica
             InitializeComponent();
             InitializeNotifyIcon();
 
-            _codeBarsReaderService = new BarcodeReaderService();
-            _codeBarsReaderService.SubscribeReader(OnDataReceived);
+            _nfcSerivce = new NfcService();
 
-            DbConnectionFactory connectionFactory = new();
-            _db = new(connectionFactory);
+            BarcodeReaderService.SubscribeReader(OnDataReceived);
+
+            _db = db;
+            _nfcService = nfcService;
+            _plc = plc;
+            _plcService = plcService;
 
             try
             {
@@ -46,25 +54,95 @@ namespace ProvaHidrica
                 // Do not throw on constructor
             }
 
-            if (!IsCodeBarsReaderConnected())
+            if (!IsBarcodeReaderConnected())
             {
                 Task.Run(async () =>
                 {
                     await Api.SendMessageAsync("erro", new());
                 });
             }
+
+            InitializeNfcReader();
+
+            _nfcSerivce.CardInserted += OnCardInserted;
         }
 
-        private static void LoadNfcWindow()
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Header.Children.Add(new Header());
+            Main.Children.Add(new MainApplication());
+            //Toolbar.Children.Add(new Toolbar());
+            Footer.Children.Add(new Footer());
+        }
+
+        private void InitializeNfcReader()
+        {
+            Dispatcher.Invoke(
+                () =>
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            _nfcService.InitializeNfcReader();
+                        }
+                        catch
+                        {
+                            ErrorMessage.Show(
+                                "Erro ao conectar o leitor NFC, verifique a conexão e tente novamente."
+                            );
+                        }
+                    })
+            );
+        }
+
+        private void OnCardInserted(object? sender, string uid)
+        {
+            Dispatcher.Invoke(async () =>
+            {
+                User? user = await _db.GetUserById(uid);
+
+                if (user != null)
+                {
+                    HandleExistingUser(user);
+                    await _plcService.WriteToPlc(1, "", "", Event.Reading);
+                }
+                else
+                {
+                    // HandleNewUser(uid);
+                }
+            });
+        }
+
+        private void HandleExistingUser(User user)
+        {
+            if (IsUserAuthenticated())
+            {
+                Dispatcher.InvokeAsync(async () =>
+                {
+                    Auth.SetLoggedInUser(user);
+                    Auth.SetLoggedAt(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+                    await Api.SendMessageAsync("authenticated", user);
+                    ShowMainWindow();
+                });
+            }
+            else
+            {
+                LoadNfcWindow(Context.Login);
+            }
+        }
+
+        private static void LoadNfcWindow(Context context = Context.Open)
         {
             NfcWindow? nfcWindow = null;
 
             Thread staThread =
                 new(() =>
                 {
-                    nfcWindow = new NfcWindow(Context.Login);
+                    nfcWindow = new NfcWindow(context);
+                    nfcWindow.Main.Children.Add(new NfcStd(context));
                     nfcWindow.Closed += (s, e) => Dispatcher.CurrentDispatcher.InvokeShutdown();
-                    nfcWindow.ShowDialog();
+                    if (context == Context.Login)
+                        nfcWindow.ShowDialog();
                 });
 
             staThread.SetApartmentState(ApartmentState.STA);
@@ -81,7 +159,7 @@ namespace ProvaHidrica
                 }
                 else
                 {
-                    LoadNfcWindow();
+                    LoadNfcWindow(Context.Login);
                 }
             };
             var contextMenu = new ContextMenuStrip();
@@ -90,19 +168,18 @@ namespace ProvaHidrica
                 null,
                 (s, e) =>
                 {
-                    LoadNfcWindow();
+                    LoadNfcWindow(Context.Login);
                 }
             );
-            contextMenu.Items.Add("Abrir", null, (s, e) => ShowMainWindow());
             contextMenu.Items.Add("Sair", null, (s, e) => ExitApplication());
             _notifyIcon.ContextMenuStrip = contextMenu;
         }
 
-        private void InitializeCodeBarsReader()
+        private static void InitializeCodeBarsReader()
         {
             try
             {
-                _codeBarsReaderService.InitializeCodeBarsReader();
+                BarcodeReaderService.InitializeCodeBarsReader();
             }
             catch (Exception e)
             {
@@ -114,8 +191,8 @@ namespace ProvaHidrica
             }
         }
 
-        private bool IsCodeBarsReaderConnected() =>
-            _codeBarsReaderService.IsCodeBarsReaderConnected();
+        private static bool IsBarcodeReaderConnected() =>
+            BarcodeReaderService.IsBarcodeReaderConnected();
 
         private void ShowMainWindow()
         {
@@ -132,20 +209,25 @@ namespace ProvaHidrica
         {
             Dispatcher.Invoke(async () =>
             {
-                //VPInput.Text = data;
-                //_isVanReading = true;
                 try
                 {
-                    Recipe? recipe = await _db.GetRecipeByVp(data);
-
-                    if (recipe == null)
+                    if (data.Length == 14)
                     {
-                        object? error = new { message = "Receita não encontrada" };
-                        await Api.SendMessageAsync("error", error);
-                        return;
-                    }
+                        Recipe? recipe = await _db.GetRecipeByVp(data);
 
-                    await Api.SendMessageAsync("barcodeData", recipe);
+                        if (recipe == null)
+                        {
+                            object? error = new { message = "Receita não encontrada" };
+                            await Api.SendMessageAsync("error", error);
+                            return;
+                        }
+
+                        await Api.SendMessageAsync("barcodeData", recipe);
+                    }
+                    else
+                    {
+                        await Api.SendMessageAsync("barcodeData", data);
+                    }
                 }
                 catch (Exception e)
                 {

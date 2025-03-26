@@ -1,6 +1,6 @@
 ﻿using System.IO.Ports;
 
-namespace ProvaHidrica.Devices.CodebarsReader
+namespace ProvaHidrica.Devices.BarcodeReader
 {
     internal class BarcodeReader
     {
@@ -48,9 +48,16 @@ namespace ProvaHidrica.Devices.CodebarsReader
 
         public void ClearComPort()
         {
-            port.DiscardInBuffer();
-            port.DiscardOutBuffer();
-            data = "";
+            if (port.IsOpen)
+            {
+                port.DiscardInBuffer();
+                port.DiscardOutBuffer();
+                data = "";
+            }
+            else
+            {
+                Console.WriteLine("Port is not open.");
+            }
         }
 
         private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
