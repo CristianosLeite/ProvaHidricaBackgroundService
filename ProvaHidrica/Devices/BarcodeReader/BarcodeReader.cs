@@ -54,10 +54,6 @@ namespace ProvaHidrica.Devices.BarcodeReader
                 port.DiscardOutBuffer();
                 data = "";
             }
-            else
-            {
-                Console.WriteLine("Port is not open.");
-            }
         }
 
         private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
