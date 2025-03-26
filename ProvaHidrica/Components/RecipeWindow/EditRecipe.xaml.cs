@@ -40,7 +40,7 @@ namespace ProvaHidrica.Components
             _createRecipe = createRecipe;
 
             RecipeId = recipe.RecipeId;
-            TbVP.Text = recipe.Vp;
+            TbKey.Text = recipe.Vp == string.Empty ? recipe.Cis?.Replace(".0", "") : recipe.Vp;
             Description.Text = recipe.Description;
             SprinklerHeight.Text = recipe.SprinklerHeight.ToString();
         }
@@ -60,7 +60,7 @@ namespace ProvaHidrica.Components
             try
             {
                 if (
-                    string.IsNullOrEmpty(TbVP.Text)
+                    string.IsNullOrEmpty(TbKey.Text)
                     || string.IsNullOrEmpty(Description.Text)
                     || string.IsNullOrEmpty(SprinklerHeight.Text)
                 )
@@ -69,14 +69,25 @@ namespace ProvaHidrica.Components
                     return;
                 }
 
-                if (TbVP.Text.Length != 14)
+                if (TbKey.Text.Length < 8)
                 {
-                    MessageBox.Show("O VP deve conter 14 caracteres.", "Atenção");
+                    MessageBox.Show("O código CIS deve conter 8 caracteres e o VP deve conter 14 caracteres.", "Atenção");
                     return;
                 }
 
+                string vp = string.Empty;
+                string cis = string.Empty;
+
+                if (TbKey.Text.Length == 8)
+                {
+                    cis = TbKey.Text;
+                }
+                else { 
+                    vp = TbKey.Text;
+                }
+
                 bool result = await _db.SaveRecipe(
-                    new(RecipeId, TbVP.Text, Description.Text, Index + 1),
+                    new(RecipeId, vp, cis, Description.Text, Index + 1),
                     context
                 );
 

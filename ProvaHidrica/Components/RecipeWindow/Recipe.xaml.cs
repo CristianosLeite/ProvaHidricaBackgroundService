@@ -46,7 +46,7 @@ namespace ProvaHidrica.Components
 
         private void CreateRecipe(object sender, RoutedEventArgs e)
         {
-            EditRecipe editRecipe = new(this, new Recipe(null, "", "", 0), Context.Create);
+            EditRecipe editRecipe = new(this, new Recipe(null, "", "", "", 0), Context.Create);
             var parentWindow = Window.GetWindow(this) as RecipeWindow;
             parentWindow?.Main?.Children.Clear();
             parentWindow?.Main.Children.Add(editRecipe);

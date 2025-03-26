@@ -9,6 +9,6 @@ namespace ProvaHidrica.Interfaces
         ObservableCollection<Recipe> LoadRecipeList();
         Task<Recipe?> GetRecipeByVp(string vp);
         Task<bool> SaveRecipe(Recipe recipe, Context context);
-        Task<bool> DeleteRecipe(string vp);
+        Task<bool> DeleteRecipe(long? id);
     }
 }
