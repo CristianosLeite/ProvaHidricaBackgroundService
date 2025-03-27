@@ -42,7 +42,7 @@ namespace ProvaHidrica.Components
             RecipeId = recipe.RecipeId;
             TbKey.Text = recipe.Vp == string.Empty ? recipe.Cis?.Replace(".0", "") : recipe.Vp;
             Description.Text = recipe.Description;
-            SprinklerHeight.Text = recipe.SprinklerHeight.ToString();
+            SprinklerHeight.SelectedIndex = recipe.SprinklerHeight - 1;
         }
 
         public void SelectedItemChanged(object sender, RoutedEventArgs e)

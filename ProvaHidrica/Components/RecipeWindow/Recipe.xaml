@@ -66,9 +66,9 @@
                    BorderBrush="{x:Null}" 
                    VerticalContentAlignment="Center">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="VP" Binding="{Binding ., Converter={StaticResource VpOrCisConverter}}" Width="180"/>
+                    <DataGridTextColumn Header="VP" Binding="{Binding ., Converter={StaticResource VpOrCisConverter}}" Width="150"/>
                     <DataGridTextColumn Header="Descrição" Binding="{Binding Description}" Width="*"/>
-                    <DataGridTextColumn Header="Altura dos aspersores" Binding="{Binding SprinklerHeight}" Width="*"/>
+                    <DataGridTextColumn Header="Aspersores" Binding="{Binding SprinklerHeight, Converter={StaticResource SprinklerHeightConverter}}" Width="100"/>
                     <DataGridTemplateColumn Header="Edição" Width="SizeToCells" IsReadOnly="True" x:Name="binColumn">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -94,3 +94,4 @@
         </materialDesign:Card>
     </Grid>
 </UserControl>
+ 

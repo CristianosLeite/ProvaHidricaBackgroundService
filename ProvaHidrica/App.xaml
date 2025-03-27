@@ -11,7 +11,8 @@
                 <materialDesign:BundledTheme BaseTheme="Dark" PrimaryColor="LightGreen" SecondaryColor="Lime" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
-        <converters:VpOrCisConverter x:Key="VpOrCisConverter"/>
+            <converters:VpOrCisConverter x:Key="VpOrCisConverter"/>
+            <converters:SprinklerHeightConverter x:Key="SprinklerHeightConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

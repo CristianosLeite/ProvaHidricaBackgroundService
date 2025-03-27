@@ -81,9 +81,19 @@ namespace ProvaHidrica.Components
         {
             try
             {
-                var filter = tbFilter.Text;
+                string? filter = tbFilter.Text;
+                string recipeKey = filter.Length == 8 ? "CIS" : "VP";
 
-                IEnumerable<Recipe> item = _recipeList.Where(p => p.Vp == filter);
+                IEnumerable<Recipe> item;
+
+                if (recipeKey == "CIS")
+                {
+                    item = _recipeList.Where(p => p.Cis == filter);
+                }
+                else
+                {
+                    item = _recipeList.Where(p => p.Vp == filter);
+                }
 
                 if (item.Any())
                 {
@@ -91,7 +101,7 @@ namespace ProvaHidrica.Components
                 }
                 else
                 {
-                    MessageBox.Show("VP não encontrado.", "Atenção");
+                    MessageBox.Show($"{recipeKey} não encontrado.", "Atenção");
                 }
             }
             catch (Exception)

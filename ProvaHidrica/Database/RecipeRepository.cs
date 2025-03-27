@@ -32,7 +32,7 @@ namespace ProvaHidrica.Database
                         new(
                             reader.GetInt32(0), // RecipeId
                             reader.IsDBNull(1) ? string.Empty : reader.GetString(1), // Vp
-                            reader.IsDBNull(2) ? string.Empty : reader.GetString(2), // Cis
+                            reader.IsDBNull(2) ? string.Empty : reader.GetString(2).Replace(".0", ""), // Cis
                             reader.GetString(3), // Description
                             reader.GetInt32(4) // SprinklerHeight
                         );

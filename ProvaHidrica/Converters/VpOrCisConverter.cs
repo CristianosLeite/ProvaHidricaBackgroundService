@@ -1,4 +1,4 @@
-﻿ using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Data;
 using ProvaHidrica.Models;
 
@@ -12,7 +12,7 @@ namespace ProvaHidrica.Converters
                 return null;
 
             return string.IsNullOrEmpty(recipe.Vp)
-                ? recipe.Cis?.ToString().Replace(".0", "") ?? string.Empty
+                ? recipe.Cis?.ToString() ?? string.Empty
                 : recipe.Vp;
         }
 
