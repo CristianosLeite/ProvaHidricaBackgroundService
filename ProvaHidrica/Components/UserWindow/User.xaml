@@ -66,8 +66,8 @@
                           BorderBrush="{x:Null}" 
                           VerticalContentAlignment="Center">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Matrícula" Binding="{Binding BadgeNumber}" Width="150"/>
-                    <DataGridTextColumn Header="Nome" Binding="{Binding UserName}" Width="*"/>
+                    <DataGridTextColumn Header="Matrícula" Binding="{Binding BadgeNumber}" Width="120"/>
+                    <DataGridTextColumn Header="Nome" Binding="{Binding UserName}" Width="280"/>
                     <DataGridTemplateColumn Header="Permissões" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
