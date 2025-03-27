@@ -150,7 +150,7 @@ namespace ProvaHidrica.Services
 
         private static async Task LoadRecipe(SocketIOResponse response)
         {
-            Recipe? recipe = await db.GetRecipeByVp(response.GetValue<string>(0));
+            Recipe? recipe = await db.GetRecipeByVpOrCis(response.GetValue<string>(0));
 
             if (recipe != null)
             {

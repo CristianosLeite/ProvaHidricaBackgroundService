@@ -169,9 +169,9 @@ namespace ProvaHidrica.Database
             return await _userRepository.DeleteUser(user);
         }
 
-        public async Task<Recipe?> GetRecipeByVp(string vp)
+        public async Task<Recipe?> GetRecipeByVpOrCis(string recipeKey)
         {
-            return await _recipeRepository.GetRecipeByVp(vp);
+            return await _recipeRepository.GetRecipeByVpOrCis(recipeKey);
         }
 
         public ObservableCollection<Recipe> LoadRecipeList()

@@ -50,19 +50,33 @@ namespace ProvaHidrica.Database
             }
         }
 
-        public async Task<Recipe?> GetRecipeByVp(string vp)
+        public async Task<Recipe?> GetRecipeByVpOrCis(string recipeKey)
         {
             try
             {
+                // If recipekey length is 8 it means that it is a CIS code
+                // Else it is a VP code
                 using var connection = _connectionFactory.GetConnection();
                 await connection!.OpenAsync();
 
-                using var command = new NpgsqlCommand(
-                    "SELECT recipe_id, vp, cis, description, sprinkler_height FROM public.recipes WHERE vp = @vp;",
-                    connection
-                );
+                NpgsqlCommand command;
 
-                command.Parameters.AddWithValue("@vp", vp);
+                if (recipeKey.Length == 8)
+                {
+                    command = new NpgsqlCommand(
+                        "SELECT recipe_id, vp, cis, description, sprinkler_height FROM public.recipes WHERE cis = @cis;",
+                        connection
+                    );
+                    command.Parameters.AddWithValue("@cis", recipeKey);
+                }
+                else
+                {
+                    command = new NpgsqlCommand(
+                        "SELECT recipe_id, vp, cis, description, sprinkler_height FROM public.recipes WHERE vp = @vp;",
+                        connection
+                    );
+                    command.Parameters.AddWithValue("@vp", recipeKey);
+                }
 
                 using var reader = await command.ExecuteReaderAsync();
 
@@ -73,8 +87,8 @@ namespace ProvaHidrica.Database
                     reader.GetInt64(0), // RecipeId
                     reader.IsDBNull(1) ? string.Empty : reader.GetString(1), // Vp
                     reader.IsDBNull(2) ? string.Empty : reader.GetString(2), // Cis
-                    reader.GetString(2), // Description
-                    reader.GetInt32(3) // SprinklerHeight
+                    reader.GetString(3), // Description
+                    reader.GetInt32(4) // SprinklerHeight
                 );
 
                 return recipe;

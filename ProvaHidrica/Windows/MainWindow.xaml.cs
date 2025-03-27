@@ -213,7 +213,7 @@ namespace ProvaHidrica
                 {
                     if (data.Length == 14)
                     {
-                        Recipe? recipe = await _db.GetRecipeByVp(data);
+                        Recipe? recipe = await _db.GetRecipeByVpOrCis(data);
 
                         if (recipe == null)
                         {

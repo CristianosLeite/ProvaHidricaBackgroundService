@@ -7,7 +7,7 @@ namespace ProvaHidrica.Interfaces
     public interface IRecipeRepository
     {
         ObservableCollection<Recipe> LoadRecipeList();
-        Task<Recipe?> GetRecipeByVp(string vp);
+        Task<Recipe?> GetRecipeByVpOrCis(string recipeKey);
         Task<bool> SaveRecipe(Recipe recipe, Context context);
         Task<bool> DeleteRecipe(long? id);
     }
