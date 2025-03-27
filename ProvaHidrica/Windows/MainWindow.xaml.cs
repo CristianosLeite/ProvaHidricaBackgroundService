@@ -1,6 +1,5 @@
 ﻿using ProvaHidrica.Components;
 using ProvaHidrica.Database;
-using ProvaHidrica.Devices.Plc;
 using ProvaHidrica.Models;
 using ProvaHidrica.Services;
 using ProvaHidrica.Types;
@@ -20,11 +19,10 @@ namespace ProvaHidrica
         private bool _isExit;
         private readonly Db _db;
         private readonly NfcService _nfcService;
-        private readonly Plc _plc;
         private readonly PlcService _plcService;
         private readonly NfcService _nfcSerivce;
 
-        public MainWindow(Db db, NfcService nfcService, Plc plc, PlcService plcService)
+        public MainWindow(Db db, NfcService nfcService, PlcService plcService)
         {
             _notifyIcon = new NotifyIcon
             {
@@ -42,7 +40,6 @@ namespace ProvaHidrica
 
             _db = db;
             _nfcService = nfcService;
-            _plc = plc;
             _plcService = plcService;
 
             try
@@ -71,7 +68,6 @@ namespace ProvaHidrica
         {
             Header.Children.Add(new Header());
             Main.Children.Add(new MainApplication());
-            //Toolbar.Children.Add(new Toolbar());
             Footer.Children.Add(new Footer());
         }
 
