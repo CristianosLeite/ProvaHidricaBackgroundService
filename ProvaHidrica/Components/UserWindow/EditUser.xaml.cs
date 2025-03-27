@@ -76,6 +76,9 @@ namespace ProvaHidrica.Components
                         case "ER":
                             ExportReports.IsChecked = true;
                             break;
+                        case "MS":
+                            ManageSettings.IsChecked = true;
+                            break;
                     }
                 }
             }
@@ -166,7 +169,8 @@ namespace ProvaHidrica.Components
                 || ManualOperation.IsChecked == true
                 || ViewOperations.IsChecked == true
                 || ViewLogs.IsChecked == true
-                || ExportReports.IsChecked == true;
+                || ExportReports.IsChecked == true
+                || ManageSettings.IsChecked == true;
         }
 
         private List<string> GetSelectedPermissions()
@@ -191,6 +195,8 @@ namespace ProvaHidrica.Components
                 permissions.Add("RL");
             if (ExportReports.IsChecked == true)
                 permissions.Add("ER");
+            if (ManageSettings.IsChecked == true)
+                permissions.Add("MS");
 
             return permissions;
         }

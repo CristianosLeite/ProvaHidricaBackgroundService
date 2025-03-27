@@ -65,7 +65,7 @@ namespace ProvaHidrica.Components
 
         private void Config_Click(object sender, RoutedEventArgs e)
         {
-            if (!Auth.UserHasPermission("M"))
+            if (!Auth.UserHasPermission("MS"))
             {
                 MessageBox.Show(
                     "Você não tem permissão para acessar essa funcionalidade.",

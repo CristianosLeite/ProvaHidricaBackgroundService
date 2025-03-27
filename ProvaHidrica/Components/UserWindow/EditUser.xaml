@@ -44,6 +44,7 @@
                 <CheckBox x:Name="ViewOperations" Content="Ver histórico de operações"/>
                 <CheckBox x:Name="ViewLogs" Content="Visualizar logs"/>
                 <CheckBox x:Name="ExportReports" Content="Exportar Relatórios"/>
+                <CheckBox x:Name="ManageSettings" Content="Acessar configurações"/>
             </ComboBox>
             <Button x:Name="BtnSave" Content="Salvar" HorizontalAlignment="Center" Margin="0,262,0,0" VerticalAlignment="Top" Width="246" Click="BtnSave_Click"/>
         </Grid>
